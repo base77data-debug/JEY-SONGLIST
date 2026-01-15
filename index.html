@@ -25,7 +25,7 @@
         .song-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
         .song-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; transition: 0.2s; }
         .song-card:hover { transform: translateY(-5px); border-color: #555; }
-        .song-card .edit-btn-group { opacity: 0; transition: 0.2s; }
+        .song-card .edit-btn-group { opacity: 0; transition: 0.2s; position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
         .song-card:hover .edit-btn-group { opacity: 1; }
         .edit-label { background: rgba(255,255,255,0.9); color: #000; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 800; cursor: pointer; }
         .art-box { width: 100%; aspect-ratio: 1/1; background: #222; }
@@ -35,13 +35,15 @@
         .sub-row { display: flex; justify-content: space-between; align-items: center; }
         .card-artist { color: #aaa; font-size: 13px; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .card-cat { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
-        .cat-발라드 { background: #5c6bc0; color: #fff; }
-        .cat-댄스 { background: #f06292; color: #fff; }
-        .cat-랩-힙합 { background: #ffb74d; color: #000; }
-        .cat-RB-Soul { background: #81c784; color: #000; }
         .cat-default { background: #444; color: #fff; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; }
         .modal-content { background: #111; width: 95%; max-width: 1000px; border-radius: 20px; padding: 40px; display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; }
+        .modal-side { display: flex; flex-direction: column; gap: 10px; }
+        .m-art { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 10px; }
+        .m-art img { width: 100%; display: block; }
+        .m-title { font-size: 24px; font-weight: 800; margin-bottom: 5px; }
+        .m-artist { font-size: 18px; color: var(--sub); margin-bottom: 20px; }
+        .m-info-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid var(--line); font-size: 14px; line-height: 1.6; }
         .lyrics-area { display: flex; flex-direction: column; gap: 15px; }
         .lyrics-display { background: #000; padding: 25px; border-radius: 12px; height: 500px; overflow-y: auto; white-space: pre-wrap; line-height: 2; font-size: 18px; border: 1px solid var(--line); }
         .split-controls { display: flex; align-items: center; gap: 12px; background: #222; padding: 12px 20px; border-radius: 12px; }
@@ -49,10 +51,10 @@
         .p-btn { padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; background: #444; color: #fff; }
         .p-btn.active { background: #fff; color: #000; }
         .p1 { color: #ffffff !important; } .p2 { color: #ff5252 !important; } .p3 { color: #448aff !important; } .p4 { color: #00e676 !important; }
-        .link-btn { padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; background: #fff; color: #000; }
+        .link-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .link-btn { padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; background: #fff; color: #000; transition: 0.2s; }
+        .link-btn:hover { background: #ddd; }
         .btn-close-abs { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #666; font-size: 30px; cursor: pointer; }
-        #categoryFilters div, #artistFilters div { padding: 5px; border-radius: 4px; cursor: pointer; font-size: 14px; color: #888; transition: 0.2s; }
-        #categoryFilters div:hover, #artistFilters div:hover { background: #333; color: #fff; }
     </style>
 </head>
 <body>
@@ -68,7 +70,7 @@
     </header>
 
     <div id="adminBox" class="admin-section">
-        <textarea id="f_bulk_input" rows="14" placeholder="제목:&#10;가수:&#10;카테고리:&#10;이미지:&#10;가사:"></textarea>
+        <textarea id="f_bulk_input" rows="14" placeholder="제목:&#10;가수:&#10;카테고리:&#10;키:&#10;원곡:&#10;이미지:&#10;클립:&#10;가사링크:&#10;가사:"></textarea>
         <div class="btn-row">
             <input type="hidden" id="edit_id">
             <button onclick="submitData()" class="save-btn" id="saveBtn">저장하기</button>
@@ -85,11 +87,7 @@
                     <span style="font-size: 14px; color: var(--sub); font-weight: 600;">곡</span>
                 </div>
             </div>
-
-            <button onclick="resetFilters()" style="width: 100%; margin-bottom: 20px; padding: 12px; background: #222; color: #fff; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;">
-                <span style="font-size: 16px;">🔄</span> 필터 초기화
-            </button>
-
+            <button onclick="resetFilters()" style="width: 100%; margin-bottom: 20px; padding: 12px; background: #222; color: #fff; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;">🔄 필터 초기화</button>
             <div style="margin-bottom: 30px;">
                 <h3 style="font-size: 14px; color: var(--sub); margin-bottom: 10px;">정렬</h3>
                 <select id="sortSelect" onchange="renderSongs()" style="width: 100%; background: #1a1a1a; color: #fff; border: 1px solid var(--line); padding: 10px; border-radius: 8px;">
@@ -98,14 +96,8 @@
                     <option value="artistAsc">가수 (ㄱㄴㄷ)</option>
                 </select>
             </div>
-            <div style="margin-bottom: 30px;">
-                <h3 style="font-size: 14px; color: var(--sub); margin-bottom: 10px;">카테고리</h3>
-                <div id="categoryFilters"></div>
-            </div>
-            <div>
-                <h3 style="font-size: 14px; color: var(--sub); margin-bottom: 10px;">주요 가수</h3>
-                <div id="artistFilters" style="max-height: 400px; overflow-y: auto;"></div>
-            </div>
+            <div style="margin-bottom: 30px;"><h3 style="font-size: 14px; color: var(--sub); margin-bottom: 10px;">카테고리</h3><div id="categoryFilters"></div></div>
+            <div><h3 style="font-size: 14px; color: var(--sub); margin-bottom: 10px;">주요 가수</h3><div id="artistFilters" style="max-height: 400px; overflow-y: auto;"></div></div>
         </aside>
         <div class="song-grid" id="mainGrid" style="flex-grow: 1;"></div>
     </div>
@@ -114,7 +106,7 @@
 <div id="modal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <button class="btn-close-abs" onclick="closeModal()">×</button>
-        <div id="modalSide"></div>
+        <div id="modalSide" class="modal-side"></div>
         <div class="lyrics-area">
             <div class="split-controls">
                 <input type="number" id="lineCount" class="input-num" value="2" min="1" oninput="updateLyrics()"> <span>줄씩</span>
@@ -163,7 +155,7 @@
         filtered.forEach(s => {
             const catClass = s.category ? `cat-${s.category.replace(/\s+/g, '-').replace(/\//g, '')}` : 'cat-default';
             grid.innerHTML += `<div class="song-card" onclick="openPop('${s.id}')">
-                <div class="edit-btn-group" style="position:absolute; top:10px; right:10px; display:flex; gap:5px; z-index:10;">
+                <div class="edit-btn-group">
                     <div class="edit-label" onclick="event.stopPropagation(); openAdmin('${s.id}')">수정</div>
                     <div class="edit-label" style="background:#ff4d4d; color:#fff;" onclick="event.stopPropagation(); deleteSong('${s.id}')">삭제</div>
                 </div>
@@ -173,15 +165,7 @@
         });
     }
 
-    // 필터 초기화 함수
-    function resetFilters() {
-        selectedCategory = '전체';
-        selectedArtist = '전체';
-        document.getElementById('searchInput').value = '';
-        renderSongs();
-        updateFilterUI();
-    }
-
+    function resetFilters() { selectedCategory = '전체'; selectedArtist = '전체'; document.getElementById('searchInput').value = ''; renderSongs(); updateFilterUI(); }
     function updateFilterUI() {
         const cats = ['전체', ...new Set(allSongs.map(s => s.category).filter(Boolean))];
         const artists = ['전체', ...new Set(allSongs.map(s => s.artist))].sort();
@@ -191,18 +175,31 @@
 
     function filterCat(c) { selectedCategory = c; renderSongs(); updateFilterUI(); }
     function filterArtist(a) { selectedArtist = a; renderSongs(); updateFilterUI(); }
+
     function openPop(id) {
-        const s = songDataList[id]; currentLyrics = s.lyrics || "";
-        document.getElementById('modalSide').innerHTML = `<img src="${s.imgUrl}" style="width:100%; border-radius:15px; margin-bottom:20px;"><h2>${s.title}</h2><p>${s.artist}</p><p>Key: ${s.key || 'N/A'}</p>`;
-        document.getElementById('linkArea').innerHTML = s.clipUrl ? `<a href="${s.clipUrl}" target="_blank" class="link-btn">클립 보기</a>` : "";
+        const s = songDataList[id]; if(!s) return;
+        currentLyrics = s.lyrics || "";
+        document.getElementById('modalSide').innerHTML = `
+            <div class="m-art"><img src="${s.imgUrl}"></div>
+            <div class="m-title">${s.title}</div>
+            <div class="m-artist">${s.artist}</div>
+            <div class="m-info-box">
+                <div><b>Key:</b> ${s.key || 'N/A'}</div>
+                <div><b>원곡:</b> ${s.original || 'N/A'}</div>
+            </div>
+        `;
+        document.getElementById('linkArea').innerHTML = `
+            ${s.clipUrl ? `<a href="${s.clipUrl}" target="_blank" class="link-btn" style="background:#ff0000; color:#fff;">유튜브 클립 보기</a>` : ""}
+            ${s.lyricsLink ? `<a href="${s.lyricsLink}" target="_blank" class="link-btn" style="background:#00c73c; color:#fff;">네이버 가사 링크</a>` : ""}
+        `;
         setPerson(1); document.getElementById('modal').style.display = 'flex';
     }
-    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
     function openAdmin(id = null) {
         const box = document.getElementById('adminBox');
         if(id) {
             const s = songDataList[id]; document.getElementById('edit_id').value = id;
-            document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n카테고리: ${s.category || ''}\n이미지: ${s.imgUrl}\n가사:\n${s.lyrics}`;
+            document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n카테고리: ${s.category || ''}\n키: ${s.key || ''}\n원곡: ${s.original || ''}\n이미지: ${s.imgUrl}\n클립: ${s.clipUrl || ''}\n가사링크: ${s.lyricsLink || ''}\n가사:\n${s.lyrics}`;
             document.getElementById('saveBtn').innerText = "수정 완료";
         } else {
             document.getElementById('edit_id').value = ""; document.getElementById('f_bulk_input').value = "";
@@ -210,7 +207,7 @@
         }
         box.style.display = 'block'; box.scrollIntoView({behavior: 'smooth'});
     }
-    function closeAdmin() { document.getElementById('adminBox').style.display = 'none'; }
+
     function submitData() {
         const bulkText = document.getElementById('f_bulk_input').value;
         const editId = document.getElementById('edit_id').value;
@@ -220,7 +217,11 @@
             if (line.startsWith('제목:')) data.title = line.replace('제목:', '').trim();
             else if (line.startsWith('가수:')) data.artist = line.replace('가수:', '').trim();
             else if (line.startsWith('카테고리:')) data.category = line.replace('카테고리:', '').trim();
+            else if (line.startsWith('키:')) data.key = line.replace('키:', '').trim();
+            else if (line.startsWith('원곡:')) data.original = line.replace('원곡:', '').trim();
             else if (line.startsWith('이미지:')) data.imgUrl = line.replace('이미지:', '').trim();
+            else if (line.startsWith('클립:')) data.clipUrl = line.replace('클립:', '').trim();
+            else if (line.startsWith('가사링크:')) data.lyricsLink = line.replace('가사링크:', '').trim();
             else if (line.startsWith('가사:')) isLyrics = true;
             else if (isLyrics) lyricsArr.push(line);
         });
@@ -230,11 +231,11 @@
         const action = editId ? ref.doc(editId).update(data) : ref.add(data);
         action.then(() => { alert("완료!"); closeAdmin(); });
     }
+
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+    function closeAdmin() { document.getElementById('adminBox').style.display = 'none'; }
     async function deleteSong(id) { if(confirm("정말 삭제하시겠습니까?")) { await db.collection("songs").doc(id).delete(); alert("삭제됨"); } }
-    function setPerson(num, btn = null) {
-        if(btn) { document.querySelectorAll('.p-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
-        currentPersonCount = num; updateLyrics();
-    }
+    function setPerson(num, btn = null) { if(btn) { document.querySelectorAll('.p-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); } currentPersonCount = num; updateLyrics(); }
     function updateLyrics() {
         const unit = parseInt(document.getElementById('lineCount').value) || 1;
         const lines = currentLyrics.split('\n').filter(l => l.trim() !== "");
