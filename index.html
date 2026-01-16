@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제이 노래 목록</title>
+    <title>제이 노래책</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
@@ -35,26 +35,39 @@
         .sub-row { display: flex; justify-content: space-between; align-items: center; }
         .card-artist { color: #aaa; font-size: 13px; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .card-cat { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 800; background: #444; color: #fff; }
+        
+        /* --- 모달 및 가사 스크롤 핵심 수정 영역 --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: #111; width: 95%; max-width: 1000px; border-radius: 20px; padding: 40px; display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; max-height: 90vh; overflow: hidden; }
-        .modal-side { display: flex; flex-direction: column; gap: 10px; }
+        .modal-content { 
+            background: #111; width: 95%; max-width: 1000px; border-radius: 20px; padding: 40px; 
+            display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; 
+            max-height: 85vh; overflow: hidden; 
+        }
+        .modal-side { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
         .m-art { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 10px; aspect-ratio: 1/1; }
         .m-art img { width: 100%; height: 100%; object-fit: cover; }
         .m-title { font-size: 24px; font-weight: 800; margin-bottom: 5px; }
         .m-artist { font-size: 18px; color: var(--sub); margin-bottom: 20px; }
         .m-info-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid var(--line); font-size: 14px; line-height: 1.6; }
-        .lyrics-area { display: flex; flex-direction: column; gap: 15px; overflow: hidden; }
-        .lyrics-display { background: #000; padding: 25px; border-radius: 12px; height: 100%; overflow-y: auto; white-space: pre-wrap; line-height: 2; font-size: 18px; border: 1px solid var(--line); }
-        .split-controls { display: flex; align-items: center; gap: 12px; background: #222; padding: 12px 20px; border-radius: 12px; }
+        
+        .lyrics-area { display: flex; flex-direction: column; gap: 15px; height: 100%; overflow: hidden; }
+        .lyrics-display { 
+            background: #000; padding: 25px; border-radius: 12px; border: 1px solid var(--line);
+            flex-grow: 1; overflow-y: auto; white-space: pre-wrap; line-height: 2; font-size: 18px; 
+        }
+        /* --- 여기까지 --- */
+
+        .split-controls { display: flex; align-items: center; gap: 12px; background: #222; padding: 12px 20px; border-radius: 12px; flex-shrink: 0; }
         .input-num { width: 50px; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-weight: 700; }
         .p-btn { padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; background: #444; color: #fff; }
         .p-btn.active { background: #fff; color: #000; }
         .p1 { color: #ffffff !important; } .p2 { color: #ff5252 !important; } .p3 { color: #448aff !important; } .p4 { color: #00e676 !important; }
-        .link-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .link-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; flex-shrink: 0; }
         .link-btn { padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; background: #fff; color: #000; }
-        .btn-close-abs { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #666; font-size: 30px; cursor: pointer; }
+        .btn-close-abs { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #666; font-size: 30px; cursor: pointer; z-index: 10; }
+        
         aside h3 { font-size: 14px; color: var(--sub); margin: 20px 0 10px 0; border-bottom: 1px solid var(--line); padding-bottom: 5px; }
-        .filter-list { max-height: 300px; overflow-y: auto; font-size: 14px; line-height: 2; color: #888; }
+        .filter-list { max-height: 250px; overflow-y: auto; font-size: 14px; line-height: 2; color: #888; }
         .filter-item { cursor: pointer; transition: 0.2s; }
         .filter-item:hover { color: #fff; }
         .filter-item.active { color: #fff; font-weight: 800; }
@@ -95,7 +108,7 @@
             <button onclick="resetFilters()" style="width: 100%; padding: 12px; background: #222; color: #fff; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-weight: 700;">🔄 필터 초기화</button>
             
             <h3>정렬</h3>
-            <select id="sortSelect" onchange="handleSearch()" style="width: 100%; background: #1a1a1a; color: #fff; border: 1px solid var(--line); padding: 10px; border-radius: 8px; outline: none;">
+            <select id="sortSelect" onchange="handleSearch()" style="width: 100%; background: #1a1a1a; color: #fff; border: 1px solid var(--line); padding: 10px; border-radius: 8px;">
                 <option value="latest">최신순</option>
                 <option value="titleAsc">제목순</option>
                 <option value="artistAsc">가수순</option>
@@ -152,7 +165,6 @@
     let currentLyrics = "";
     let currentPersonCount = 1;
 
-    // 무한 스크롤 관련
     let displayLimit = 12; 
     let filteredSongs = [];
 
@@ -216,13 +228,11 @@
     };
 
     function updateFilterUI() {
-        // 카테고리 필터 UI
         const cats = ['전체', ...new Set(allSongs.map(s => s.category).filter(Boolean))];
         document.getElementById('categoryFilters').innerHTML = cats.map(c => `
             <div class="filter-item ${selectedCategory===c?'active':''}" onclick="selectedCategory='${c}'; handleSearch(); updateFilterUI();">${c}</div>
         `).join('');
 
-        // 가수별 필터 UI (가나다 순 정렬)
         const artists = ['전체', ...new Set(allSongs.map(s => s.artist))].sort((a, b) => a.localeCompare(b, 'ko'));
         document.getElementById('artistFilters').innerHTML = artists.map(a => `
             <div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>
@@ -230,11 +240,9 @@
     }
 
     function resetFilters() {
-        selectedCategory = '전체';
-        selectedArtist = '전체';
+        selectedCategory = '전체'; selectedArtist = '전체';
         document.getElementById('searchInput').value = '';
-        updateFilterUI();
-        handleSearch();
+        updateFilterUI(); handleSearch();
     }
 
     function checkAuth(action, id = null) {
@@ -259,10 +267,12 @@
             </div>
         `;
         document.getElementById('linkArea').innerHTML = `
-            ${s.clipUrl ? `<a href="${s.clipUrl}" target="_blank" class="link-btn" style="background:#ff0000; color:#fff; margin-bottom:5px;">유튜브 클립</a>` : ""}
+            ${s.clipUrl ? `<a href="${s.clipUrl}" target="_blank" class="link-btn" style="background:#ff0000; color:#fff;">유튜브 클립</a>` : ""}
             ${s.lyricsLink ? `<a href="${s.lyricsLink}" target="_blank" class="link-btn" style="background:#00c73c; color:#fff;">가사 원문</a>` : ""}
         `;
-        setPerson(1); document.getElementById('modal').style.display = 'flex';
+        setPerson(1); 
+        document.getElementById('modal').style.display = 'flex';
+        document.getElementById('lyricsDisplay').scrollTop = 0; // 팝업 열 때 스크롤 맨 위로
     }
 
     function updateLyrics() {
