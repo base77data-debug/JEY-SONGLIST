@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        :root { --bg: #0a0a0a; --card: #141414; --text: #ffffff; --sub: #888888; --line: #222222; --point: #fff; }
+        :root { --bg: #0a0a0a; --card: #141414; --text: #ffffff; --sub: #888888; --line: #222222; }
         * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
@@ -21,7 +21,6 @@
         .admin-section { background: #111; padding: 25px; border-radius: 12px; margin-bottom: 30px; display: none; border: 1px solid var(--line); }
         .admin-section textarea { width: 100%; padding: 15px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
         
-        /* 노래 상태 선택 버튼 스타일 */
         .status-selector { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
         .status-btn { padding: 10px 20px; background: #222; border: 1px solid #444; color: #888; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.2s; }
         .status-btn.active { background: #fff; color: #000; border-color: #fff; }
@@ -44,11 +43,10 @@
         .sub-row { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
         .card-artist { color: #aaa; font-size: 13px; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
-        /* 뱃지 스타일 (장르, 상태) */
         .badge-group { display: flex; gap: 4px; }
         .card-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 800; white-space: nowrap; }
         .bg-genre { background: #444; color: #fff; }
-        .bg-status { background: #00e676; color: #000; } /* 상태 뱃지 (초록색) */
+        .bg-status { background: #00e676; color: #000; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: #111; width: 100%; max-width: 1000px; border-radius: 20px; padding: 40px; display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; height: 80vh; min-height: 500px; overflow: hidden; }
@@ -188,7 +186,6 @@
         handleSearch();
     });
 
-    // 상태 버튼 선택 함수
     function setStatus(val, btn) {
         document.getElementById('f_status').value = val;
         document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
@@ -242,11 +239,16 @@
     };
 
     function updateFilterUI() {
+        // 장르 필터
         const cats = ['전체', ...new Set(allSongs.map(s => s.genre || s.category).filter(Boolean))];
         document.getElementById('categoryFilters').innerHTML = cats.map(c => `
             <div class="filter-item ${selectedCategory===c?'active':''}" onclick="selectedCategory='${c}'; handleSearch(); updateFilterUI();">${c}</div>
         `).join('');
-        const artists = ['전체', ...new Set(allSongs.map(s => s.artist))].sort((a, b) => a.localeCompare(b, 'ko'));
+
+        // 가수별 필터 - '전체'를 맨 위로 고정
+        const artistsRaw = [...new Set(allSongs.map(s => s.artist))].sort((a, b) => a.localeCompare(b, 'ko'));
+        const artists = ['전체', ...artistsRaw];
+        
         document.getElementById('artistFilters').innerHTML = artists.map(a => `
             <div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>
         `).join('');
@@ -305,8 +307,6 @@
             const s = songDataList[id]; document.getElementById('edit_id').value = id;
             document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n장르: ${s.genre || s.category || ''}\n키: ${s.key || ''}\n이미지: ${s.imgUrl}\n유튜브 링크: ${s.clipUrl || ''}\n가사링크: ${s.lyricsLink || ''}\n가사:\n${s.lyrics}`;
             document.getElementById('saveBtn').innerText = "수정 완료";
-            
-            // 기존 상태 버튼 활성화
             const targetStatus = s.status || '완곡';
             document.getElementById('f_status').value = targetStatus;
             document.querySelectorAll('.status-btn').forEach(b => {
@@ -316,7 +316,7 @@
         } else {
             document.getElementById('edit_id').value = ""; document.getElementById('f_bulk_input').value = "";
             document.getElementById('saveBtn').innerText = "저장 하기";
-            setStatus('완곡', document.querySelectorAll('.status-btn')[0]); // 기본값 완곡
+            setStatus('완곡', document.querySelectorAll('.status-btn')[0]);
         }
         box.style.display = 'block'; box.scrollIntoView({behavior: 'smooth'});
     }
@@ -327,7 +327,6 @@
         const statusVal = document.getElementById('f_status').value;
         const lines = bulkText.split('\n');
         const data = { lyrics: "", status: statusVal }; let isLyrics = false; let lyricsArr = [];
-        
         lines.forEach(line => {
             if (line.startsWith('제목:')) data.title = line.replace('제목:', '').trim();
             else if (line.startsWith('가수:')) data.artist = line.replace('가수:', '').trim();
