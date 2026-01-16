@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제이 노래 목록</title> <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <title>제이 노래 목록</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        :root { --bg: #0a0a0a; --card: #141414; --text: #ffffff; --sub: #888888; --line: #222222; }
+        :root { --bg: #0a0a0a; --card: #141414; --text: #ffffff; --sub: #888888; --line: #222222; --point: #fff; }
         * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
@@ -16,57 +17,69 @@
         .search-box { width: 100%; position: relative; }
         .search-input { width: 100%; padding: 12px 20px; background: #1a1a1a; border: 1px solid var(--line); border-radius: 8px; color: #fff; font-size: 16px; outline: none; }
         .admin-btn { background: #fff; color: #000; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 700; }
+        
         .admin-section { background: #111; padding: 25px; border-radius: 12px; margin-bottom: 30px; display: none; border: 1px solid var(--line); }
         .admin-section textarea { width: 100%; padding: 15px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; margin-bottom: 15px; font-size: 14px; }
+        
+        /* 노래 상태 선택 버튼 스타일 */
+        .status-selector { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
+        .status-btn { padding: 10px 20px; background: #222; border: 1px solid #444; color: #888; border-radius: 6px; cursor: pointer; font-weight: 700; transition: 0.2s; }
+        .status-btn.active { background: #fff; color: #000; border-color: #fff; }
+
         .btn-row { display: flex; gap: 10px; }
         .save-btn { flex: 2; padding: 15px; background: #fff; font-weight: 800; border-radius: 8px; cursor: pointer; color: #000; border: none; }
         .cancel-btn { flex: 1; padding: 15px; background: #333; font-weight: 800; border-radius: 8px; cursor: pointer; color: #fff; border: none; }
+        
         .song-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
         .song-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; transition: 0.2s; height: 100%; }
         .song-card:hover { transform: translateY(-5px); border-color: #555; }
         .song-card .edit-btn-group { opacity: 0; transition: 0.2s; position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 10; }
         .song-card:hover .edit-btn-group { opacity: 1; }
         .edit-label { background: rgba(255,255,255,0.9); color: #000; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 800; cursor: pointer; }
+        
         .art-box { width: 100%; aspect-ratio: 1/1; background: #222; overflow: hidden; }
         .art-box img { width: 100%; height: 100%; object-fit: cover; }
         .info { padding: 15px; }
         .title-row { font-size: 16px; font-weight: 700; margin-bottom: 8px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .sub-row { display: flex; justify-content: space-between; align-items: center; }
-        .card-artist { color: #aaa; font-size: 13px; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .card-cat { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 800; background: #444; color: #fff; }
+        .sub-row { display: flex; justify-content: space-between; align-items: center; gap: 5px; }
+        .card-artist { color: #aaa; font-size: 13px; flex-grow: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        /* 뱃지 스타일 (장르, 상태) */
+        .badge-group { display: flex; gap: 4px; }
+        .card-badge { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 800; white-space: nowrap; }
+        .bg-genre { background: #444; color: #fff; }
+        .bg-status { background: #00e676; color: #000; } /* 상태 뱃지 (초록색) */
+
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { 
-            background: #111; width: 100%; max-width: 1000px; border-radius: 20px; padding: 40px; 
-            display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; 
-            height: 80vh; min-height: 500px; overflow: hidden; 
-        }
+        .modal-content { background: #111; width: 100%; max-width: 1000px; border-radius: 20px; padding: 40px; display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; height: 80vh; min-height: 500px; overflow: hidden; }
         .modal-side { display: flex; flex-direction: column; gap: 10px; height: 100%; overflow-y: auto; }
         .m-art { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 10px; aspect-ratio: 1/1; }
         .m-art img { width: 100%; height: 100%; object-fit: cover; }
         .m-title { font-size: 24px; font-weight: 800; margin-bottom: 5px; }
         .m-artist { font-size: 18px; color: var(--sub); margin-bottom: 20px; }
         .m-info-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid var(--line); font-size: 14px; line-height: 1.6; }
+        
         .lyrics-area { display: flex; flex-direction: column; gap: 15px; height: 100%; min-height: 0; }
-        .lyrics-display { 
-            background: #000; padding: 25px; border-radius: 12px; border: 1px solid var(--line);
-            flex: 1; overflow-y: scroll !important; white-space: pre-wrap; line-height: 2; font-size: 18px; 
-        }
+        .lyrics-display { background: #000; padding: 25px; border-radius: 12px; border: 1px solid var(--line); flex: 1; overflow-y: scroll !important; white-space: pre-wrap; line-height: 2; font-size: 18px; }
         .lyrics-display::-webkit-scrollbar { width: 8px; }
         .lyrics-display::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
-        .lyrics-display::-webkit-scrollbar-track { background: transparent; }
+        
         .split-controls { display: flex; align-items: center; gap: 12px; background: #222; padding: 12px 20px; border-radius: 12px; flex-shrink: 0; }
         .input-num { width: 50px; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-weight: 700; }
         .p-btn { padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; background: #444; color: #fff; }
         .p-btn.active { background: #fff; color: #000; }
         .p1 { color: #ffffff !important; } .p2 { color: #ff5252 !important; } .p3 { color: #448aff !important; } .p4 { color: #00e676 !important; }
+        
         .link-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; flex-shrink: 0; }
         .link-btn { padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; background: #fff; color: #000; }
         .btn-close-abs { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #666; font-size: 30px; cursor: pointer; z-index: 10; }
+        
         aside h3 { font-size: 14px; color: var(--sub); margin: 20px 0 10px 0; border-bottom: 1px solid var(--line); padding-bottom: 5px; }
         .filter-list { max-height: 250px; overflow-y: auto; font-size: 14px; line-height: 2; color: #888; }
         .filter-item { cursor: pointer; transition: 0.2s; }
         .filter-item:hover { color: #fff; }
         .filter-item.active { color: #fff; font-weight: 800; }
+        
         #loading { text-align: center; padding: 40px; color: var(--sub); font-size: 14px; grid-column: 1/-1; }
         footer { margin-top: 50px; padding: 40px 20px; border-top: 1px solid var(--line); text-align: center; color: var(--sub); font-size: 12px; }
     </style>
@@ -75,15 +88,23 @@
 <div class="container">
     <header>
         <div class="header-top">
-            <h1>제이 노래 목록</h1> <button class="admin-btn" onclick="checkAuth('add')">+ 곡 추가</button>
+            <h1>제이 노래 목록</h1>
+            <button class="admin-btn" onclick="checkAuth('add')">+ 곡 추가</button>
         </div>
         <div class="search-box">
-            <input type="text" id="searchInput" class="search-input" placeholder="제목, 가수, 또는 카테고리를 검색하세요..." oninput="handleSearch()">
+            <input type="text" id="searchInput" class="search-input" placeholder="제목, 가수, 또는 장르를 검색하세요..." oninput="handleSearch()">
         </div>
     </header>
 
     <div id="adminBox" class="admin-section">
-        <textarea id="f_bulk_input" rows="14" placeholder="제목:&#10;가수:&#10;카테고리:&#10;키:&#10;이미지:&#10;유튜브 링크:&#10;가사링크:&#10;가사:"></textarea>
+        <div class="status-selector">
+            <span style="font-size: 14px; color: #888; margin-right: 10px;">노래 상태:</span>
+            <button type="button" class="status-btn" onclick="setStatus('완곡', this)">완곡</button>
+            <button type="button" class="status-btn" onclick="setStatus('1절', this)">1절</button>
+            <button type="button" class="status-btn" onclick="setStatus('기타', this)">기타</button>
+            <input type="hidden" id="f_status" value="완곡">
+        </div>
+        <textarea id="f_bulk_input" rows="14" placeholder="제목:&#10;가수:&#10;장르:&#10;키:&#10;이미지:&#10;유튜브 링크:&#10;가사링크:&#10;가사:"></textarea>
         <div class="btn-row">
             <input type="hidden" id="edit_id">
             <button onclick="submitData()" class="save-btn" id="saveBtn">저장하기</button>
@@ -107,7 +128,7 @@
                 <option value="titleAsc">제목순</option>
                 <option value="artistAsc">가수순</option>
             </select>
-            <h3>카테고리</h3>
+            <h3>장르</h3>
             <div id="categoryFilters" class="filter-list"></div>
             <h3>가수별</h3>
             <div id="artistFilters" class="filter-list"></div>
@@ -167,12 +188,19 @@
         handleSearch();
     });
 
+    // 상태 버튼 선택 함수
+    function setStatus(val, btn) {
+        document.getElementById('f_status').value = val;
+        document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
     function handleSearch() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const sortType = document.getElementById('sortSelect').value;
         filteredSongs = allSongs.filter(s => {
-            const matchSearch = (s.title + s.artist + (s.category||'')).toLowerCase().includes(searchTerm);
-            const matchCat = selectedCategory === '전체' || s.category === selectedCategory;
+            const matchSearch = (s.title + s.artist + (s.genre||s.category||'')).toLowerCase().includes(searchTerm);
+            const matchCat = selectedCategory === '전체' || (s.genre||s.category) === selectedCategory;
             const matchArt = selectedArtist === '전체' || s.artist === selectedArtist;
             return matchSearch && matchCat && matchArt;
         });
@@ -196,7 +224,10 @@
                     <span class="title-row">${s.title}</span>
                     <div class="sub-row">
                         <span class="card-artist">${s.artist}</span>
-                        <span class="card-cat">${s.category || '기타'}</span>
+                        <div class="badge-group">
+                            <span class="card-badge bg-genre">${s.genre || s.category || '기타'}</span>
+                            ${s.status ? `<span class="card-badge bg-status">${s.status}</span>` : ''}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -211,7 +242,7 @@
     };
 
     function updateFilterUI() {
-        const cats = ['전체', ...new Set(allSongs.map(s => s.category).filter(Boolean))];
+        const cats = ['전체', ...new Set(allSongs.map(s => s.genre || s.category).filter(Boolean))];
         document.getElementById('categoryFilters').innerHTML = cats.map(c => `
             <div class="filter-item ${selectedCategory===c?'active':''}" onclick="selectedCategory='${c}'; handleSearch(); updateFilterUI();">${c}</div>
         `).join('');
@@ -244,6 +275,7 @@
             <div class="m-title">${s.title}</div>
             <div class="m-artist">${s.artist}</div>
             <div class="m-info-box">
+                <div><b>상태:</b> ${s.status || '정보없음'}</div>
                 <div><b>Key:</b> ${s.key || 'N/A'}</div>
             </div>
         `;
@@ -271,11 +303,20 @@
         const box = document.getElementById('adminBox');
         if(id) {
             const s = songDataList[id]; document.getElementById('edit_id').value = id;
-            document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n카테고리: ${s.category || ''}\n키: ${s.key || ''}\n이미지: ${s.imgUrl}\n유튜브 링크: ${s.clipUrl || ''}\n가사링크: ${s.lyricsLink || ''}\n가사:\n${s.lyrics}`;
+            document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n장르: ${s.genre || s.category || ''}\n키: ${s.key || ''}\n이미지: ${s.imgUrl}\n유튜브 링크: ${s.clipUrl || ''}\n가사링크: ${s.lyricsLink || ''}\n가사:\n${s.lyrics}`;
             document.getElementById('saveBtn').innerText = "수정 완료";
+            
+            // 기존 상태 버튼 활성화
+            const targetStatus = s.status || '완곡';
+            document.getElementById('f_status').value = targetStatus;
+            document.querySelectorAll('.status-btn').forEach(b => {
+                if(b.innerText === targetStatus) b.classList.add('active');
+                else b.classList.remove('active');
+            });
         } else {
             document.getElementById('edit_id').value = ""; document.getElementById('f_bulk_input').value = "";
             document.getElementById('saveBtn').innerText = "저장 하기";
+            setStatus('완곡', document.querySelectorAll('.status-btn')[0]); // 기본값 완곡
         }
         box.style.display = 'block'; box.scrollIntoView({behavior: 'smooth'});
     }
@@ -283,12 +324,15 @@
     function submitData() {
         const bulkText = document.getElementById('f_bulk_input').value;
         const editId = document.getElementById('edit_id').value;
+        const statusVal = document.getElementById('f_status').value;
         const lines = bulkText.split('\n');
-        const data = { lyrics: "" }; let isLyrics = false; let lyricsArr = [];
+        const data = { lyrics: "", status: statusVal }; let isLyrics = false; let lyricsArr = [];
+        
         lines.forEach(line => {
             if (line.startsWith('제목:')) data.title = line.replace('제목:', '').trim();
             else if (line.startsWith('가수:')) data.artist = line.replace('가수:', '').trim();
-            else if (line.startsWith('카테고리:')) data.category = line.replace('카테고리:', '').trim();
+            else if (line.startsWith('장르:')) data.genre = line.replace('장르:', '').trim();
+            else if (line.startsWith('카테고리:')) data.genre = line.replace('카테고리:', '').trim();
             else if (line.startsWith('키:')) data.key = line.replace('키:', '').trim();
             else if (line.startsWith('이미지:')) data.imgUrl = line.replace('이미지:', '').trim();
             else if (line.startsWith('유튜브 링크:')) data.clipUrl = line.replace('유튜브 링크:', '').trim();
