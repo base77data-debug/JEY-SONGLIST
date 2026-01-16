@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제이 노래책</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <title>제이 노래 목록</title> <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <link rel="stylesheet" crossorigin href="https://cdn.gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         :root { --bg: #0a0a0a; --card: #141414; --text: #ffffff; --sub: #888888; --line: #222222; }
         * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
@@ -35,14 +34,11 @@
         .sub-row { display: flex; justify-content: space-between; align-items: center; }
         .card-artist { color: #aaa; font-size: 13px; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .card-cat { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 800; background: #444; color: #fff; }
-        
-        /* --- 모달 및 가사 스크롤 강제 설정 --- */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { 
             background: #111; width: 100%; max-width: 1000px; border-radius: 20px; padding: 40px; 
             display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; 
-            height: 80vh; min-height: 500px; /* 높이 강제 고정 */
-            overflow: hidden; 
+            height: 80vh; min-height: 500px; overflow: hidden; 
         }
         .modal-side { display: flex; flex-direction: column; gap: 10px; height: 100%; overflow-y: auto; }
         .m-art { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 10px; aspect-ratio: 1/1; }
@@ -50,18 +46,14 @@
         .m-title { font-size: 24px; font-weight: 800; margin-bottom: 5px; }
         .m-artist { font-size: 18px; color: var(--sub); margin-bottom: 20px; }
         .m-info-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid var(--line); font-size: 14px; line-height: 1.6; }
-        
         .lyrics-area { display: flex; flex-direction: column; gap: 15px; height: 100%; min-height: 0; }
         .lyrics-display { 
             background: #000; padding: 25px; border-radius: 12px; border: 1px solid var(--line);
-            flex: 1; overflow-y: scroll !important; /* 스크롤바 강제 활성화 */
-            white-space: pre-wrap; line-height: 2; font-size: 18px; 
+            flex: 1; overflow-y: scroll !important; white-space: pre-wrap; line-height: 2; font-size: 18px; 
         }
-        /* 스크롤바 디자인 추가 */
         .lyrics-display::-webkit-scrollbar { width: 8px; }
         .lyrics-display::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         .lyrics-display::-webkit-scrollbar-track { background: transparent; }
-
         .split-controls { display: flex; align-items: center; gap: 12px; background: #222; padding: 12px 20px; border-radius: 12px; flex-shrink: 0; }
         .input-num { width: 50px; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-weight: 700; }
         .p-btn { padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; background: #444; color: #fff; }
@@ -70,7 +62,6 @@
         .link-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; flex-shrink: 0; }
         .link-btn { padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; background: #fff; color: #000; }
         .btn-close-abs { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #666; font-size: 30px; cursor: pointer; z-index: 10; }
-        
         aside h3 { font-size: 14px; color: var(--sub); margin: 20px 0 10px 0; border-bottom: 1px solid var(--line); padding-bottom: 5px; }
         .filter-list { max-height: 250px; overflow-y: auto; font-size: 14px; line-height: 2; color: #888; }
         .filter-item { cursor: pointer; transition: 0.2s; }
@@ -84,8 +75,7 @@
 <div class="container">
     <header>
         <div class="header-top">
-            <h1>제이 노래 목록</h1>
-            <button class="admin-btn" onclick="checkAuth('add')">+ 곡 추가</button>
+            <h1>제이 노래 목록</h1> <button class="admin-btn" onclick="checkAuth('add')">+ 곡 추가</button>
         </div>
         <div class="search-box">
             <input type="text" id="searchInput" class="search-input" placeholder="제목, 가수, 또는 카테고리를 검색하세요..." oninput="handleSearch()">
@@ -93,7 +83,7 @@
     </header>
 
     <div id="adminBox" class="admin-section">
-        <textarea id="f_bulk_input" rows="14" placeholder="제목:&#10;가수:&#10;카테고리:&#10;키:&#10;원곡:&#10;이미지:&#10;클립:&#10;가사링크:&#10;가사:"></textarea>
+        <textarea id="f_bulk_input" rows="14" placeholder="제목:&#10;가수:&#10;카테고리:&#10;키:&#10;이미지:&#10;유튜브 링크:&#10;가사링크:&#10;가사:"></textarea>
         <div class="btn-row">
             <input type="hidden" id="edit_id">
             <button onclick="submitData()" class="save-btn" id="saveBtn">저장하기</button>
@@ -111,17 +101,14 @@
                 </div>
             </div>
             <button onclick="resetFilters()" style="width: 100%; padding: 12px; background: #222; color: #fff; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-weight: 700;">🔄 필터 초기화</button>
-            
             <h3>정렬</h3>
             <select id="sortSelect" onchange="handleSearch()" style="width: 100%; background: #1a1a1a; color: #fff; border: 1px solid var(--line); padding: 10px; border-radius: 8px;">
                 <option value="latest">최신순</option>
                 <option value="titleAsc">제목순</option>
                 <option value="artistAsc">가수순</option>
             </select>
-
             <h3>카테고리</h3>
             <div id="categoryFilters" class="filter-list"></div>
-
             <h3>가수별</h3>
             <div id="artistFilters" class="filter-list"></div>
         </aside>
@@ -169,7 +156,6 @@
     let selectedArtist = '전체';
     let currentLyrics = "";
     let currentPersonCount = 1;
-
     let displayLimit = 12; 
     let filteredSongs = [];
 
@@ -184,17 +170,14 @@
     function handleSearch() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
         const sortType = document.getElementById('sortSelect').value;
-        
         filteredSongs = allSongs.filter(s => {
             const matchSearch = (s.title + s.artist + (s.category||'')).toLowerCase().includes(searchTerm);
             const matchCat = selectedCategory === '전체' || s.category === selectedCategory;
             const matchArt = selectedArtist === '전체' || s.artist === selectedArtist;
             return matchSearch && matchCat && matchArt;
         });
-
         if (sortType === 'titleAsc') filteredSongs.sort((a,b) => a.title.localeCompare(b.title, 'ko'));
         else if (sortType === 'artistAsc') filteredSongs.sort((a,b) => a.artist.localeCompare(b.artist, 'ko'));
-
         displayLimit = 12; 
         renderGrid();
     }
@@ -202,7 +185,6 @@
     function renderGrid() {
         const grid = document.getElementById('mainGrid');
         const songsToRender = filteredSongs.slice(0, displayLimit);
-        
         grid.innerHTML = songsToRender.map(s => `
             <div class="song-card" onclick="openPop('${s.id}')">
                 <div class="edit-btn-group">
@@ -219,16 +201,12 @@
                 </div>
             </div>
         `).join('');
-
         document.getElementById('loading').style.display = (displayLimit >= filteredSongs.length) ? 'none' : 'block';
     }
 
     window.onscroll = function() {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-            if (displayLimit < filteredSongs.length) {
-                displayLimit += 12;
-                renderGrid();
-            }
+            if (displayLimit < filteredSongs.length) { displayLimit += 12; renderGrid(); }
         }
     };
 
@@ -237,7 +215,6 @@
         document.getElementById('categoryFilters').innerHTML = cats.map(c => `
             <div class="filter-item ${selectedCategory===c?'active':''}" onclick="selectedCategory='${c}'; handleSearch(); updateFilterUI();">${c}</div>
         `).join('');
-
         const artists = ['전체', ...new Set(allSongs.map(s => s.artist))].sort((a, b) => a.localeCompare(b, 'ko'));
         document.getElementById('artistFilters').innerHTML = artists.map(a => `
             <div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>
@@ -268,20 +245,15 @@
             <div class="m-artist">${s.artist}</div>
             <div class="m-info-box">
                 <div><b>Key:</b> ${s.key || 'N/A'}</div>
-                <div><b>원곡:</b> ${s.original || 'N/A'}</div>
             </div>
         `;
         document.getElementById('linkArea').innerHTML = `
-            ${s.clipUrl ? `<a href="${s.clipUrl}" target="_blank" class="link-btn" style="background:#ff0000; color:#fff;">유튜브 클립</a>` : ""}
+            ${s.clipUrl ? `<a href="${s.clipUrl}" target="_blank" class="link-btn" style="background:#ff0000; color:#fff;">유튜브 링크 보기</a>` : ""}
             ${s.lyricsLink ? `<a href="${s.lyricsLink}" target="_blank" class="link-btn" style="background:#00c73c; color:#fff;">가사 원문</a>` : ""}
         `;
         setPerson(1); 
         document.getElementById('modal').style.display = 'flex';
-        // 팝업 열 때 가사 스크롤 초기화
-        setTimeout(() => {
-            const display = document.getElementById('lyricsDisplay');
-            if(display) display.scrollTop = 0;
-        }, 100);
+        setTimeout(() => { document.getElementById('lyricsDisplay').scrollTop = 0; }, 100);
     }
 
     function updateLyrics() {
@@ -299,7 +271,7 @@
         const box = document.getElementById('adminBox');
         if(id) {
             const s = songDataList[id]; document.getElementById('edit_id').value = id;
-            document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n카테고리: ${s.category || ''}\n키: ${s.key || ''}\n원곡: ${s.original || ''}\n이미지: ${s.imgUrl}\n클립: ${s.clipUrl || ''}\n가사링크: ${s.lyricsLink || ''}\n가사:\n${s.lyrics}`;
+            document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n카테고리: ${s.category || ''}\n키: ${s.key || ''}\n이미지: ${s.imgUrl}\n유튜브 링크: ${s.clipUrl || ''}\n가사링크: ${s.lyricsLink || ''}\n가사:\n${s.lyrics}`;
             document.getElementById('saveBtn').innerText = "수정 완료";
         } else {
             document.getElementById('edit_id').value = ""; document.getElementById('f_bulk_input').value = "";
@@ -318,9 +290,8 @@
             else if (line.startsWith('가수:')) data.artist = line.replace('가수:', '').trim();
             else if (line.startsWith('카테고리:')) data.category = line.replace('카테고리:', '').trim();
             else if (line.startsWith('키:')) data.key = line.replace('키:', '').trim();
-            else if (line.startsWith('원곡:')) data.original = line.replace('원곡:', '').trim();
             else if (line.startsWith('이미지:')) data.imgUrl = line.replace('이미지:', '').trim();
-            else if (line.startsWith('클립:')) data.clipUrl = line.replace('클립:', '').trim();
+            else if (line.startsWith('유튜브 링크:')) data.clipUrl = line.replace('유튜브 링크:', '').trim();
             else if (line.startsWith('가사링크:')) data.lyricsLink = line.replace('가사링크:', '').trim();
             else if (line.startsWith('가사:')) isLyrics = true;
             else if (isLyrics) lyricsArr.push(line);
@@ -338,4 +309,3 @@
 </script>
 </body>
 </html>
-
