@@ -6,7 +6,7 @@
     <title>제이 노래책</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" crossorigin href="https://cdn.gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         :root { --bg: #0a0a0a; --card: #141414; --text: #ffffff; --sub: #888888; --line: #222222; }
         * { box-sizing: border-box; font-family: "Pretendard", sans-serif; }
@@ -36,26 +36,31 @@
         .card-artist { color: #aaa; font-size: 13px; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .card-cat { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 800; background: #444; color: #fff; }
         
-        /* --- 모달 및 가사 스크롤 핵심 수정 영역 --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; align-items: center; justify-content: center; }
+        /* --- 모달 및 가사 스크롤 강제 설정 --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { 
-            background: #111; width: 95%; max-width: 1000px; border-radius: 20px; padding: 40px; 
+            background: #111; width: 100%; max-width: 1000px; border-radius: 20px; padding: 40px; 
             display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; 
-            max-height: 85vh; overflow: hidden; 
+            height: 80vh; min-height: 500px; /* 높이 강제 고정 */
+            overflow: hidden; 
         }
-        .modal-side { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
+        .modal-side { display: flex; flex-direction: column; gap: 10px; height: 100%; overflow-y: auto; }
         .m-art { width: 100%; border-radius: 15px; overflow: hidden; margin-bottom: 10px; aspect-ratio: 1/1; }
         .m-art img { width: 100%; height: 100%; object-fit: cover; }
         .m-title { font-size: 24px; font-weight: 800; margin-bottom: 5px; }
         .m-artist { font-size: 18px; color: var(--sub); margin-bottom: 20px; }
         .m-info-box { background: #1a1a1a; padding: 15px; border-radius: 10px; border: 1px solid var(--line); font-size: 14px; line-height: 1.6; }
         
-        .lyrics-area { display: flex; flex-direction: column; gap: 15px; height: 100%; overflow: hidden; }
+        .lyrics-area { display: flex; flex-direction: column; gap: 15px; height: 100%; min-height: 0; }
         .lyrics-display { 
             background: #000; padding: 25px; border-radius: 12px; border: 1px solid var(--line);
-            flex-grow: 1; overflow-y: auto; white-space: pre-wrap; line-height: 2; font-size: 18px; 
+            flex: 1; overflow-y: scroll !important; /* 스크롤바 강제 활성화 */
+            white-space: pre-wrap; line-height: 2; font-size: 18px; 
         }
-        /* --- 여기까지 --- */
+        /* 스크롤바 디자인 추가 */
+        .lyrics-display::-webkit-scrollbar { width: 8px; }
+        .lyrics-display::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        .lyrics-display::-webkit-scrollbar-track { background: transparent; }
 
         .split-controls { display: flex; align-items: center; gap: 12px; background: #222; padding: 12px 20px; border-radius: 12px; flex-shrink: 0; }
         .input-num { width: 50px; padding: 8px; border-radius: 6px; border: 1px solid #444; background: #000; color: #fff; text-align: center; font-weight: 700; }
@@ -129,7 +134,7 @@
 
     <footer>
         <p>© 2026 JEY SONGBOOK. All rights reserved.</p>
-        <p>본 사이트는 비영리적 학습 목적으로 제작되었습니다. 이미지 및 가사의 저작권은 원저작권자에게 있으며, 요청 시 즉시 조치하겠습니다.</p>
+        <p>본 사이트는 비영리적 학습 목적으로 제작되었습니다. 저작권 관련 문의 시 즉시 조치하겠습니다.</p>
     </footer>
 </div>
 
@@ -272,7 +277,11 @@
         `;
         setPerson(1); 
         document.getElementById('modal').style.display = 'flex';
-        document.getElementById('lyricsDisplay').scrollTop = 0; // 팝업 열 때 스크롤 맨 위로
+        // 팝업 열 때 가사 스크롤 초기화
+        setTimeout(() => {
+            const display = document.getElementById('lyricsDisplay');
+            if(display) display.scrollTop = 0;
+        }, 100);
     }
 
     function updateLyrics() {
