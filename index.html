@@ -44,13 +44,7 @@
         aside { width: 220px; flex-shrink: 0; position: sticky; top: 20px; }
         .side-card { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
         
-        .song-grid { 
-            flex-grow: 1; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
-            gap: 20px; 
-        }
-        
+        .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         .song-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: transform 0.2s; }
         .song-card:hover { transform: translateY(-5px); }
         
@@ -89,6 +83,7 @@
         .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--sub); font-size: 30px; cursor: pointer; }
 
         footer { text-align: center; padding: 40px; color: var(--sub); font-size: 12px; border-top: 1px solid var(--line); margin-top: 50px; }
+        #loading { text-align: center; padding: 20px; color: var(--sub); display: none; grid-column: 1/-1; }
     </style>
 </head>
 <body>
@@ -139,7 +134,10 @@
             <h3>가수별</h3><div id="artistFilters" class="filter-list"></div>
         </aside>
 
-        <div class="song-grid" id="mainGrid"></div>
+        <div style="flex-grow: 1;">
+            <div class="song-grid" id="mainGrid"></div>
+            <div id="loading">노래를 더 불러오고 있습니다...</div>
+        </div>
     </div>
     <footer><p>© 2026 JEY SONGBOOK. All rights reserved.</p></footer>
 </div>
@@ -171,18 +169,13 @@
 
     let allSongs = [], songDataList = {}, selectedCategory = '전체', selectedArtist = '전체', isAdmin = false;
     let currentLyrics = "", currentPersonCount = 1;
+    let displayLimit = 15, filteredSongs = []; // 15곡 단위로 변경
 
-    // 장르별 색상 매핑
     const genreColors = {
-        '힙합': { bg: '#FF5722', text: '#fff' },
-        '랩/힙합': { bg: '#FF5722', text: '#fff' },
-        'R&B/Soul': { bg: '#9C27B0', text: '#fff' },
-        'R&B': { bg: '#9C27B0', text: '#fff' },
-        '댄스': { bg: '#2196F3', text: '#fff' },
-        '발라드': { bg: '#4CAF50', text: '#fff' },
-        '인디': { bg: '#FFC107', text: '#000' },
-        '록/메탈': { bg: '#f44336', text: '#fff' },
-        'POP': { bg: '#E91E63', text: '#fff' }
+        '힙합': { bg: '#FF5722', text: '#fff' }, '랩/힙합': { bg: '#FF5722', text: '#fff' },
+        'R&B/Soul': { bg: '#9C27B0', text: '#fff' }, 'R&B': { bg: '#9C27B0', text: '#fff' },
+        '댄스': { bg: '#2196F3', text: '#fff' }, '발라드': { bg: '#4CAF50', text: '#fff' },
+        '인디': { bg: '#FFC107', text: '#000' }, '록/메탈': { bg: '#f44336', text: '#fff' }, 'POP': { bg: '#E91E63', text: '#fff' }
     };
 
     function getGenreStyle(genre) {
@@ -229,20 +222,22 @@
     function handleSearch() {
         const term = document.getElementById('searchInput').value.toLowerCase();
         const sort = document.getElementById('sortSelect').value;
-        let filtered = allSongs.filter(s => {
+        filteredSongs = allSongs.filter(s => {
             const matchSearch = (s.title + s.artist + (s.genre||s.category||'')).toLowerCase().includes(term);
             const matchCat = selectedCategory === '전체' || (s.genre||s.category) === selectedCategory;
             const matchArt = selectedArtist === '전체' || s.artist === selectedArtist;
             return matchSearch && matchCat && matchArt;
         });
-        if (sort === 'titleAsc') filtered.sort((a,b) => a.title.localeCompare(b.title, 'ko'));
-        else if (sort === 'artistAsc') filtered.sort((a,b) => a.artist.localeCompare(b.artist, 'ko'));
-        window.filteredSongs = filtered; renderGrid();
+        if (sort === 'titleAsc') filteredSongs.sort((a,b) => a.title.localeCompare(b.title, 'ko'));
+        else if (sort === 'artistAsc') filteredSongs.sort((a,b) => a.artist.localeCompare(b.artist, 'ko'));
+        displayLimit = 15; // 검색 시 15곡부터 시작
+        renderGrid();
     }
 
     function renderGrid() {
         const grid = document.getElementById('mainGrid');
-        grid.innerHTML = window.filteredSongs.map(s => `
+        const songsToRender = filteredSongs.slice(0, displayLimit);
+        grid.innerHTML = songsToRender.map(s => `
             <div class="song-card" onclick="openPop('${s.id}')">
                 <div class="edit-btn-group">
                     <div class="edit-label" onclick="event.stopPropagation(); openAdmin('${s.id}')">수정</div>
@@ -261,20 +256,24 @@
                 </div>
             </div>
         `).join('');
+        document.getElementById('loading').style.display = (displayLimit >= filteredSongs.length) ? 'none' : 'block';
     }
 
+    window.onscroll = function() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+            if (displayLimit < filteredSongs.length) {
+                displayLimit += 15; // 스크롤 시 15곡씩 추가
+                renderGrid();
+            }
+        }
+    };
+
     function updateFilterUI() {
-        // 장르 필터
         const genres = ['전체', ...new Set(allSongs.map(s => s.genre || s.category).filter(Boolean))];
         document.getElementById('categoryFilters').innerHTML = genres.map(g => `<div class="filter-item ${selectedCategory===g?'active':''}" onclick="selectedCategory='${g}'; handleSearch(); updateFilterUI();">${g}</div>`).join('');
-        
-        // 가수별 필터 - '전체'를 맨 위로 고정
-        const artistsRaw = [...new Set(allSongs.map(s => s.artist))].sort((a, b) => a.localeCompare(b, 'ko'));
-        const artists = ['전체', ...artistsRaw];
-        
-        document.getElementById('artistFilters').innerHTML = artists.map(a => `
-            <div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>
-        `).join('');
+        const artsRaw = [...new Set(allSongs.map(s => s.artist))].sort((a,b) => a.localeCompare(b, 'ko'));
+        const artists = ['전체', ...artsRaw];
+        document.getElementById('artistFilters').innerHTML = artists.map(a => `<div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>`).join('');
     }
 
     function openPop(id) {
@@ -360,4 +359,3 @@
 </script>
 </body>
 </html>
-
