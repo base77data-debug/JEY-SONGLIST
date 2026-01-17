@@ -19,7 +19,7 @@
 
         * { box-sizing: border-box; font-family: "Pretendard", sans-serif; transition: background 0.2s, border 0.2s; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 20px; min-height: 100vh; }
-        .container { max-width: 1400px; margin: 0 auto; } /* 컨테이너 폭을 조금 넓혀 5열 공간 확보 */
+        .container { max-width: 1400px; margin: 0 auto; }
         
         header { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
         .header-top { display: flex; justify-content: space-between; align-items: center; }
@@ -44,11 +44,10 @@
         aside { width: 220px; flex-shrink: 0; position: sticky; top: 20px; }
         .side-card { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
         
-        /* 5열 배치를 위한 그리드 수정 */
         .song-grid { 
             flex-grow: 1; 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* 최소 폭을 180px로 줄여 5개 배치 유도 */
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); 
             gap: 20px; 
         }
         
@@ -160,7 +159,7 @@
                 </div>
             </div>
             <div id="lyricsDisplay" class="lyrics-display"></div>
-            <div id="linkArea" class="link-group"></div>
+            <div id="linkArea"></div>
         </div>
     </div>
 </div>
@@ -265,10 +264,17 @@
     }
 
     function updateFilterUI() {
+        // 장르 필터
         const genres = ['전체', ...new Set(allSongs.map(s => s.genre || s.category).filter(Boolean))];
         document.getElementById('categoryFilters').innerHTML = genres.map(g => `<div class="filter-item ${selectedCategory===g?'active':''}" onclick="selectedCategory='${g}'; handleSearch(); updateFilterUI();">${g}</div>`).join('');
-        const artists = ['전체', ...new Set(allSongs.map(s => s.artist))].sort((a,b) => a.localeCompare(b, 'ko'));
-        document.getElementById('artistFilters').innerHTML = artists.map(a => `<div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>`).join('');
+        
+        // 가수별 필터 - '전체'를 맨 위로 고정
+        const artistsRaw = [...new Set(allSongs.map(s => s.artist))].sort((a, b) => a.localeCompare(b, 'ko'));
+        const artists = ['전체', ...artistsRaw];
+        
+        document.getElementById('artistFilters').innerHTML = artists.map(a => `
+            <div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>
+        `).join('');
     }
 
     function openPop(id) {
@@ -354,3 +360,4 @@
 </script>
 </body>
 </html>
+
