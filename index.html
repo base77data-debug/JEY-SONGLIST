@@ -16,16 +16,32 @@
             --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --sub: #86868b; --line: #d2d2d7;
             --input-bg: #ffffff; --primary: #1d1d1f; --primary-text: #ffffff;
         }
+        /* 에겐제이모드 (분홍색 테마) */
+        [data-theme="pink"] {
+            --bg: #fff0f5; --card: #ffffff; --text: #d02090; --sub: #db7093; --line: #ffb6c1;
+            --input-bg: #ffffff; --primary: #ff69b4; --primary-text: #ffffff;
+        }
 
-        * { box-sizing: border-box; font-family: "Pretendard", sans-serif; transition: background 0.2s; }
+        * { box-sizing: border-box; font-family: "Pretendard", sans-serif; transition: background 0.3s, border 0.3s, color 0.3s; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 20px; min-height: 100vh; }
         .container { max-width: 1400px; margin: 0 auto; }
         
         header { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        
+        .title-area { display: flex; align-items: center; gap: 15px; }
+        .title-area h1 { margin: 0; font-size: 28px; }
+
         .controls { display: flex; gap: 10px; align-items: center; }
 
-        /* 외부 링크 버튼 스타일 */
+        /* 에겐제이모드 전용 작은 버튼 */
+        .pink-btn { 
+            background: #ff69b4; color: #fff; border: none; padding: 5px 10px; 
+            border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; 
+            transition: 0.2s; box-shadow: 0 2px 5px rgba(255,105,180,0.3);
+        }
+        .pink-btn:hover { transform: scale(1.05); background: #ff1493; }
+
         .sns-link { 
             display: flex; align-items: center; justify-content: center; 
             width: 42px; height: 42px; border-radius: 12px; 
@@ -45,7 +61,6 @@
         .search-box { width: 100%; }
         .search-input { width: 100%; padding: 12px 20px; background: var(--input-bg); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font-size: 16px; outline: none; }
 
-        /* 관리 모달 (수정/추가 팝업) */
         .admin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .admin-modal { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 600px; border: 1px solid var(--line); position: relative; }
         .admin-modal textarea { width: 100%; padding: 15px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; margin-bottom: 15px; font-size: 14px; line-height: 1.5; resize: none; }
@@ -59,7 +74,7 @@
         .side-card { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
         
         .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .song-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: transform 0.2s; }
+        .song-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: 0.2s; }
         .song-card:hover { transform: translateY(-5px); }
         
         .edit-btn-group { display: none; position: absolute; top: 10px; right: 10px; gap: 5px; z-index: 10; }
@@ -91,20 +106,21 @@
         .input-num { width: 50px; padding: 5px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg); color: var(--text); text-align: center; }
         .p-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; background: #444; color: #fff; }
         .p-btn.active { background: #fff; color: #000; }
-        .p1 { color: #fff; } .p2 { color: #ff5252; } .p3 { color: #448aff; } .p4 { color: #00e676; }
 
         .link-btn { display: block; padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 700; background: var(--primary); color: var(--primary-text); margin-top: 10px; }
         .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--sub); font-size: 30px; cursor: pointer; }
 
         footer { text-align: center; padding: 40px; color: var(--sub); font-size: 12px; border-top: 1px solid var(--line); margin-top: 50px; line-height: 1.8; }
-        #loading { text-align: center; padding: 20px; color: var(--sub); display: none; }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
         <div class="header-top">
-            <h1>제이 노래 목록</h1>
+            <div class="title-area">
+                <h1 id="siteTitle">제이 노래 목록</h1>
+                <button class="pink-btn" onclick="togglePinkMode()">에겐제이모드</button>
+            </div>
             <div class="controls">
                 <a href="https://www.sooplive.co.kr/station/qw794" target="_blank" class="sns-link soop-btn" title="SOOP 방송국">SOOP</a>
                 <a href="https://cafe.naver.com/jeykoreanfood" target="_blank" class="sns-link cafe-btn" title="네이버 카페">CAFE</a>
@@ -130,7 +146,7 @@
             <textarea id="f_bulk_input" rows="12" placeholder="제목:&#10;가수:&#10;장르:&#10;키:&#10;이미지:&#10;유튜브 링크:&#10;가사링크:&#10;가사:"></textarea>
             <div style="display:flex; gap:10px;">
                 <input type="hidden" id="edit_id">
-                <button onclick="submitData()" class="admin-toggle-btn" style="flex:2; padding:15px; font-size:16px;">데이터 저장하기</button>
+                <button onclick="submitData()" class="admin-toggle-btn" style="flex:2; padding:15px;">데이터 저장하기</button>
                 <button onclick="closeAdmin()" class="btn" style="flex:1; background:#333; color:#fff;">닫기</button>
             </div>
         </div>
@@ -155,7 +171,7 @@
 
         <div style="flex-grow: 1;">
             <div class="song-grid" id="mainGrid"></div>
-            <div id="loading">노래를 더 불러오고 있습니다...</div>
+            <div id="loading" style="text-align:center; padding:20px; color:var(--sub); display:none;">노래를 더 불러오고 있습니다...</div>
         </div>
     </div>
     <footer>
@@ -189,9 +205,8 @@
     const firebaseConfig = { apiKey: "AIzaSyAWAe1oGCH3-bT97fZyB8qW_hFE5aOT9BE", authDomain: "jey-songbook-1369e.firebaseapp.com", projectId: "jey-songbook-1369e", storageBucket: "jey-songbook-1369e.firebasestorage.app", messagingSenderId: "541154865578", appId: "1:541154865578:web:1a71c78e9d0b7eefa7bbd3" };
     firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-    let allSongs = [], songDataList = {}, selectedCategory = '전체', selectedArtist = '전체', isAdmin = false;
-    let currentLyrics = "", currentPersonCount = 1;
-    let displayLimit = 15, filteredSongs = [];
+    let allSongs = [], songDataList = {}, selectedCategory = '전체', selectedArtist = '전체', isAdmin = false, isPink = false;
+    let currentLyrics = "", currentPersonCount = 1, displayLimit = 15, filteredSongs = [];
 
     const genreColors = {
         '힙합': { bg: '#FF5722', text: '#fff' }, 'R&B': { bg: '#9C27B0', text: '#fff' },
@@ -205,8 +220,24 @@
         return `background: ${color.bg}; color: ${color.text};`;
     }
 
+    // --- 에겐제이모드 토글 ---
+    function togglePinkMode() {
+        isPink = !isPink;
+        const html = document.documentElement;
+        const title = document.getElementById('siteTitle');
+        if(isPink) {
+            html.setAttribute('data-theme', 'pink');
+            title.innerText = "곤듀 노래 목록";
+        } else {
+            html.removeAttribute('data-theme');
+            title.innerText = "제이 노래 목록";
+        }
+    }
+
     function toggleTheme() {
-        const target = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        const current = document.documentElement.getAttribute('data-theme');
+        if (isPink) return; // 분홍 모드일 때는 테마 전환 금지
+        const target = current === 'light' ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', target);
         document.getElementById('themeBtn').innerText = target === 'light' ? '☀️' : '🌙';
     }
