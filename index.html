@@ -28,12 +28,12 @@
         /* 외부 링크 버튼 스타일 */
         .sns-link { 
             display: flex; align-items: center; justify-content: center; 
-            width: 40px; height: 40px; border-radius: 10px; 
-            text-decoration: none; font-weight: 900; font-size: 11px; color: #fff; 
+            width: 42px; height: 42px; border-radius: 12px; 
+            text-decoration: none; font-weight: 900; font-size: 10px; color: #fff; 
             transition: 0.2s; border: none; cursor: pointer;
         }
-        .soop-btn { background-color: #0080ff; } /* SOOP 파란색 */
-        .cafe-btn { background-color: #03c75a; } /* 네이버 초록색 */
+        .soop-btn { background-color: #0080ff; }
+        .cafe-btn { background-color: #03c75a; }
         .sns-link:hover { transform: scale(1.1); filter: brightness(1.1); }
 
         .btn { border-radius: 8px; cursor: pointer; font-weight: 700; border: 1px solid var(--line); transition: 0.2s; font-size: 14px; }
@@ -45,7 +45,7 @@
         .search-box { width: 100%; }
         .search-input { width: 100%; padding: 12px 20px; background: var(--input-bg); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font-size: 16px; outline: none; }
 
-        /* 관리자 입력창 모달 */
+        /* 관리 모달 (수정/추가 팝업) */
         .admin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .admin-modal { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 600px; border: 1px solid var(--line); position: relative; }
         .admin-modal textarea { width: 100%; padding: 15px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; margin-bottom: 15px; font-size: 14px; line-height: 1.5; resize: none; }
@@ -59,7 +59,7 @@
         .side-card { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
         
         .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .song-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: 0.2s; }
+        .song-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: transform 0.2s; }
         .song-card:hover { transform: translateY(-5px); }
         
         .edit-btn-group { display: none; position: absolute; top: 10px; right: 10px; gap: 5px; z-index: 10; }
@@ -120,7 +120,7 @@
 
     <div id="adminOverlay" class="admin-overlay" onclick="closeAdmin()">
         <div class="admin-modal" onclick="event.stopPropagation()">
-            <h2 id="adminTitle" style="margin-top:0;">노래 정보 수정</h2>
+            <h2 id="adminTitle" style="margin-top:0;">노래 정보 관리</h2>
             <div class="status-selector">
                 <button type="button" class="status-btn active" onclick="setStatus('완곡', this)">완곡</button>
                 <button type="button" class="status-btn" onclick="setStatus('1절', this)">1절</button>
@@ -160,7 +160,7 @@
     </div>
     <footer>
         <p>© 2026 JEY SONGBOOK. All rights reserved.</p>
-        <p>본 사이트는 비영리적 학습 목적으로 제작되었습니다. 이미지 및 가사의 저작권은 원저작권자에게 있으며, 요청 시 즉시 조치하겠습니다.</p>
+        <p>본 사이트는 비영리적 학습 목적으로 제작되었습니다. 이미지 및 가사의 저작권은 원저작권자에게 있으며, <br>요청 시 즉시 조치하겠습니다. (문의: base77data@gmail.com)</p>
     </footer>
 </div>
 
