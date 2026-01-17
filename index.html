@@ -25,6 +25,17 @@
         .header-top { display: flex; justify-content: space-between; align-items: center; }
         .controls { display: flex; gap: 10px; align-items: center; }
 
+        /* 외부 링크 버튼 스타일 */
+        .sns-link { 
+            display: flex; align-items: center; justify-content: center; 
+            width: 40px; height: 40px; border-radius: 10px; 
+            text-decoration: none; font-weight: 900; font-size: 11px; color: #fff; 
+            transition: 0.2s; border: none; cursor: pointer;
+        }
+        .soop-btn { background-color: #0080ff; } /* SOOP 파란색 */
+        .cafe-btn { background-color: #03c75a; } /* 네이버 초록색 */
+        .sns-link:hover { transform: scale(1.1); filter: brightness(1.1); }
+
         .btn { border-radius: 8px; cursor: pointer; font-weight: 700; border: 1px solid var(--line); transition: 0.2s; font-size: 14px; }
         .theme-btn { background: var(--card); color: var(--text); padding: 8px 12px; font-size: 18px; }
         .admin-toggle-btn { background: var(--primary); color: var(--primary-text); padding: 10px 16px; border: none; }
@@ -34,11 +45,10 @@
         .search-box { width: 100%; }
         .search-input { width: 100%; padding: 12px 20px; background: var(--input-bg); border: 1px solid var(--line); border-radius: 8px; color: var(--text); font-size: 16px; outline: none; }
 
-        /* --- 관리자 입력창 모달 스타일 (수정 시 스크롤 고정용) --- */
+        /* 관리자 입력창 모달 */
         .admin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .admin-modal { background: var(--card); padding: 30px; border-radius: 20px; width: 100%; max-width: 600px; border: 1px solid var(--line); position: relative; }
         .admin-modal textarea { width: 100%; padding: 15px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 8px; margin-bottom: 15px; font-size: 14px; line-height: 1.5; resize: none; }
-        /* --------------------------------------------------- */
 
         .status-selector { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; }
         .status-btn { padding: 8px 16px; background: var(--bg); border: 1px solid var(--line); color: var(--sub); border-radius: 6px; cursor: pointer; font-weight: 700; }
@@ -96,6 +106,8 @@
         <div class="header-top">
             <h1>제이 노래 목록</h1>
             <div class="controls">
+                <a href="https://www.sooplive.co.kr/station/qw794" target="_blank" class="sns-link soop-btn" title="SOOP 방송국">SOOP</a>
+                <a href="https://cafe.naver.com/jeykoreanfood" target="_blank" class="sns-link cafe-btn" title="네이버 카페">CAFE</a>
                 <button class="btn theme-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
                 <button class="btn admin-toggle-btn" onclick="toggleAdminMode()" id="adminToggle">관리 모드 켜기</button>
                 <button class="btn add-btn" onclick="openAdmin()" id="addBtn">+ 곡 추가</button>
@@ -315,7 +327,6 @@
         document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active');
     }
 
-    // --- 수정/추가 시 스크롤 고정용 모달 오픈 함수 ---
     function openAdmin(id = null) {
         document.getElementById('adminOverlay').style.display = 'flex';
         if(id) {
@@ -358,4 +369,3 @@
 </script>
 </body>
 </html>
-
