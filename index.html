@@ -8,15 +8,17 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        /* 테마별 변수 설정 */
+        /* 기본: 밝은 모드 설정 (Light Mode) */
         :root { 
-            --bg: #0a0a0a; --card: #141414; --text: #ffffff; --sub: #888888; --line: #222222; 
-            --input-bg: #1a1a1a; --primary: #ffffff; --primary-text: #000000;
-        }
-        [data-theme="light"] {
             --bg: #f5f5f7; --card: #ffffff; --text: #1d1d1f; --sub: #86868b; --line: #d2d2d7;
             --input-bg: #ffffff; --primary: #1d1d1f; --primary-text: #ffffff;
         }
+        /* 다크 모드 (Dark Mode) */
+        [data-theme="dark"] {
+            --bg: #0a0a0a; --card: #141414; --text: #ffffff; --sub: #888888; --line: #222222; 
+            --input-bg: #1a1a1a; --primary: #ffffff; --primary-text: #000000;
+        }
+        /* 에겐 모드 (Pink Mode) */
         [data-theme="pink"] {
             --bg: #fff0f5; --card: #ffffff; --text: #d02090; --sub: #db7093; --line: #ffb6c1;
             --input-bg: #ffffff; --primary: #ff69b4; --primary-text: #ffffff;
@@ -42,7 +44,7 @@
         .cafe-btn { background-color: #03c75a; }
         .sns-link:hover { transform: scale(1.05); filter: brightness(1.1); }
 
-        /* 통합 테마 버튼 스타일 */
+        /* 통합 테마 버튼 */
         .icon-btn { 
             width: 42px; height: 42px; background: var(--card); color: var(--text); 
             border: 1px solid var(--line); border-radius: 10px; cursor: pointer; 
@@ -57,7 +59,7 @@
             padding: 0 16px; height: 42px; border-radius: 10px; cursor: pointer; 
             font-weight: 700; font-size: 14px; transition: 0.2s;
         }
-        .admin-toggle-btn.active { background: #ff4d4d; color: #fff; }
+        .admin-toggle-btn.active { background: #ff4d4d !important; color: #fff !important; }
         .add-btn { background: #007aff; color: #fff; border: none; padding: 0 16px; height: 42px; border-radius: 10px; display: none; font-weight: 700; cursor: pointer; }
 
         .search-box { width: 100%; }
@@ -76,6 +78,7 @@
         aside { width: 220px; flex-shrink: 0; position: sticky; top: 20px; }
         .side-card { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
         
+        /* 5열 배치 */
         .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
         .song-card { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: transform 0.2s; }
         .song-card:hover { transform: translateY(-5px); }
@@ -100,6 +103,7 @@
         .filter-item:hover { color: var(--text); }
         .filter-item.active { color: var(--text); font-weight: 800; }
 
+        /* 상세 모달 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: var(--card); width: 100%; max-width: 1000px; border-radius: 20px; padding: 40px; display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; height: 85vh; overflow: hidden; }
         .lyrics-area { display: flex; flex-direction: column; gap: 15px; height: 100%; overflow: hidden; }
@@ -114,7 +118,7 @@
         .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--sub); font-size: 30px; cursor: pointer; }
 
         footer { text-align: center; padding: 40px; color: var(--sub); font-size: 12px; border-top: 1px solid var(--line); margin-top: 50px; line-height: 1.8; }
-        #loading { text-align: center; padding: 30px; color: var(--sub); display: none; }
+        #loading { text-align: center; padding: 20px; color: var(--sub); display: none; }
     </style>
 </head>
 <body>
@@ -128,7 +132,7 @@
                 <a href="https://www.sooplive.co.kr/station/qw794" target="_blank" class="sns-link soop-btn" title="SOOP 방송국">SOOP</a>
                 <a href="https://cafe.naver.com/jeykoreanfood" target="_blank" class="sns-link cafe-btn" title="네이버 카페">CAFE</a>
                 
-                <button class="icon-btn" onclick="cycleTheme()" id="themeCycleBtn" title="테마 변경">🌙</button>
+                <button class="icon-btn" onclick="cycleTheme()" id="themeCycleBtn" title="테마 변경">☀️</button>
                 <button class="admin-toggle-btn" onclick="toggleAdminMode()" id="adminToggle">관리 모드</button>
                 <button class="add-btn" onclick="openAdmin()" id="addBtn">+ 추가</button>
             </div>
@@ -175,7 +179,7 @@
 
         <div style="flex-grow: 1;">
             <div class="song-grid" id="mainGrid"></div>
-            <div id="loading">노래를 더 불러오고 있습니다...</div>
+            <div id="loading" style="text-align:center; padding:30px; color:var(--sub); display:none;">노래를 더 불러오고 있습니다...</div>
         </div>
     </div>
     <footer>
@@ -211,7 +215,7 @@
 
     let allSongs = [], songDataList = {}, selectedCategory = '전체', selectedArtist = '전체', isAdmin = false;
     let currentLyrics = "", currentPersonCount = 1, displayLimit = 15, filteredSongs = [];
-    let themeState = 0; // 0: Dark, 1: Light, 2: Pink
+    let themeState = 0; // 0: Light, 1: Dark, 2: Pink
 
     const genreColors = {
         '힙합': { bg: '#FF5722', text: '#fff' }, 'R&B': { bg: '#9C27B0', text: '#fff' },
@@ -225,21 +229,21 @@
         return `background: ${color.bg}; color: ${color.text};`;
     }
 
-    // --- 테마 순환 함수 (Dark -> Light -> Pink) ---
+    // --- 테마 순환 함수 (Light -> Dark -> Pink) ---
     function cycleTheme() {
         themeState = (themeState + 1) % 3;
         const html = document.documentElement;
         const title = document.getElementById('siteTitle');
         const btn = document.getElementById('themeCycleBtn');
 
-        if (themeState === 0) { // Dark 모드
+        if (themeState === 0) { // Light 모드 (기본)
             html.removeAttribute('data-theme');
             title.innerText = "제이 노래 목록";
-            btn.innerText = "🌙";
-        } else if (themeState === 1) { // Light 모드
-            html.setAttribute('data-theme', 'light');
-            title.innerText = "제이 노래 목록";
             btn.innerText = "☀️";
+        } else if (themeState === 1) { // Dark 모드
+            html.setAttribute('data-theme', 'dark');
+            title.innerText = "제이 노래 목록";
+            btn.innerText = "🌙";
         } else if (themeState === 2) { // Pink 모드 (에겐모드)
             html.setAttribute('data-theme', 'pink');
             title.innerText = "곤듀 노래 목록";
