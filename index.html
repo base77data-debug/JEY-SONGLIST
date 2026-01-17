@@ -82,7 +82,7 @@
         .link-btn { display: block; padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: 700; background: var(--primary); color: var(--primary-text); margin-top: 10px; }
         .close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--sub); font-size: 30px; cursor: pointer; }
 
-        footer { text-align: center; padding: 40px; color: var(--sub); font-size: 12px; border-top: 1px solid var(--line); margin-top: 50px; }
+        footer { text-align: center; padding: 40px; color: var(--sub); font-size: 12px; border-top: 1px solid var(--line); margin-top: 50px; line-height: 1.8; }
         #loading { text-align: center; padding: 20px; color: var(--sub); display: none; grid-column: 1/-1; }
     </style>
 </head>
@@ -139,7 +139,10 @@
             <div id="loading">노래를 더 불러오고 있습니다...</div>
         </div>
     </div>
-    <footer><p>© 2026 JEY SONGBOOK. All rights reserved.</p></footer>
+    <footer>
+        <p>© 2026 JEY SONGBOOK. All rights reserved.</p>
+        <p>본 사이트는 비영리적 학습 목적으로 제작되었습니다. 이미지 및 가사의 저작권은 원저작권자에게 있으며, 요청 시 즉시 조치하겠습니다.</p>
+    </footer>
 </div>
 
 <div id="modal" class="modal" onclick="closeModal()">
@@ -157,7 +160,7 @@
                 </div>
             </div>
             <div id="lyricsDisplay" class="lyrics-display"></div>
-            <div id="linkArea"></div>
+            <div id="linkArea" class="link-group"></div>
         </div>
     </div>
 </div>
@@ -169,7 +172,7 @@
 
     let allSongs = [], songDataList = {}, selectedCategory = '전체', selectedArtist = '전체', isAdmin = false;
     let currentLyrics = "", currentPersonCount = 1;
-    let displayLimit = 15, filteredSongs = []; // 15곡 단위로 변경
+    let displayLimit = 15, filteredSongs = [];
 
     const genreColors = {
         '힙합': { bg: '#FF5722', text: '#fff' }, '랩/힙합': { bg: '#FF5722', text: '#fff' },
@@ -230,7 +233,7 @@
         });
         if (sort === 'titleAsc') filteredSongs.sort((a,b) => a.title.localeCompare(b.title, 'ko'));
         else if (sort === 'artistAsc') filteredSongs.sort((a,b) => a.artist.localeCompare(b.artist, 'ko'));
-        displayLimit = 15; // 검색 시 15곡부터 시작
+        displayLimit = 15; 
         renderGrid();
     }
 
@@ -262,7 +265,7 @@
     window.onscroll = function() {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
             if (displayLimit < filteredSongs.length) {
-                displayLimit += 15; // 스크롤 시 15곡씩 추가
+                displayLimit += 15;
                 renderGrid();
             }
         }
