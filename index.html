@@ -13,16 +13,19 @@
             --bg: #f0f4f8; --card: #ffffff; --text: #2d3748; --sub: #718096; --line: #e2e8f0;
             --input-bg: #ffffff; --primary: #667eea; --primary-text: #ffffff; --accent: #a3b1ff;
             --shadow: rgba(0, 0, 0, 0.08);
+            --notice-bg: #ebf4ff; --notice-text: #2b6cb0;
         }
         [data-theme="dark"] {
             --bg: #1a202c; --card: #2d3748; --text: #f7fafc; --sub: #a0aec0; --line: #4a5568; 
             --input-bg: #2d3748; --primary: #7f9cf5; --primary-text: #ffffff; --accent: #5a67d8;
             --shadow: rgba(0, 0, 0, 0.2);
+            --notice-bg: #2a4365; --notice-text: #bee3f8;
         }
         [data-theme="pink"] {
             --bg: #fff5f7; --card: #ffffff; --text: #b83280; --sub: #d6bcfa; --line: #fed7e2;
             --input-bg: #ffffff; --primary: #f687b3; --primary-text: #ffffff; --accent: #fbb6ce;
             --shadow: rgba(184, 50, 128, 0.1);
+            --notice-bg: #fff5f7; --notice-text: #b83280;
         }
 
         /* [2] 기본 스타일 */
@@ -30,7 +33,7 @@
         body { background: var(--bg); color: var(--text); margin: 0; padding: 20px; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 1400px; margin: 0 auto; }
         
-        header { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; border-bottom: 2px solid var(--line); padding-bottom: 20px; }
+        header { display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px; border-bottom: 2px solid var(--line); padding-bottom: 20px; }
         .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .title-area h1 { margin: 0; font-size: 28px; font-weight: 800; color: var(--primary); }
         .controls { display: flex; gap: 10px; align-items: center; }
@@ -40,17 +43,17 @@
         .sns-link:hover { transform: scale(1.05); }
 
         .icon-btn { width: 42px; height: 42px; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        .memo-btn { background: #faf089; color: #744210; border: 1px solid #ecc94b; }
         
         .admin-toggle-btn { background: var(--primary); color: var(--primary-text); border: none; padding: 0 16px; height: 42px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.2s; }
         .admin-toggle-btn.active { background: #f56565 !important; color: #fff !important; }
         .add-btn { background: #4299e1; color: #fff; border: none; padding: 0 16px; height: 42px; border-radius: 12px; display: none; font-weight: 700; cursor: pointer; }
 
-        .memo-btn { background: #faf089; color: #744210; font-size: 20px; border: 1px solid #ecc94b; }
-        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--card); color: var(--text); padding: 15px 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-weight: 700; z-index: 3000; opacity: 0; visibility: hidden; transition: 0.3s; border: 2px solid var(--accent); max-width: 90%; text-align: center; }
-        .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
-
-        .search-box { width: 100%; }
+        .search-box { width: 100%; margin-bottom: 15px; }
         .search-input { width: 100%; padding: 15px 20px; background: var(--input-bg); border: 2px solid var(--line); border-radius: 15px; color: var(--text); font-size: 16px; outline: none; }
+
+        /* [신규] 첫 화면 공지 바 스타일 */
+        .notice-bar { background: var(--notice-bg); color: var(--notice-text); padding: 12px 20px; border-radius: 15px; margin-bottom: 30px; text-align: center; font-size: 14px; font-weight: 700; box-shadow: 0 4px 6px var(--shadow); border: 1px solid var(--line); }
 
         /* [3] 관리자 입력 팝업 */
         .admin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
@@ -66,12 +69,12 @@
         .status-btn { flex: 1; padding: 12px; background: var(--bg); border: 2px solid var(--line); color: var(--sub); border-radius: 12px; cursor: pointer; font-weight: 800; }
         .status-btn.active { background: var(--primary) !important; color: white !important; transform: translateY(-2px); }
 
-        /* [4] 메인 레이아웃 및 카드 그리드 수정 */
+        /* [4] 메인 그리드 및 카드 디자인 */
         .main-layout { display: flex; gap: 30px; align-items: flex-start; }
         aside { width: 220px; flex-shrink: 0; position: sticky; top: 20px; }
         .side-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
         .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .song-card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; }
+        .song-card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: 0.2s; }
         .song-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px var(--shadow); border-color: var(--accent); }
         .edit-btn-group { display: none; position: absolute; top: 12px; right: 12px; gap: 6px; z-index: 10; }
         body.admin-mode .edit-btn-group { display: flex; }
@@ -79,11 +82,9 @@
 
         .art-box { width: 100%; aspect-ratio: 1/1; background: var(--line); overflow: hidden; }
         .art-box img { width: 100%; height: 100%; object-fit: cover; }
-        
         .info { padding: 18px; }
         .title-row { font-size: 15px; font-weight: 700; margin-bottom: 8px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
-        /* [수정] 사진에서 어긋났던 가수명과 뱃지 정렬 수정 */
         .sub-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
         .card-artist { color: var(--sub); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: left; }
         .badge-group { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
@@ -93,15 +94,14 @@
         aside h3 { font-size: 12px; color: var(--sub); margin: 30px 0 12px 0; border-bottom: 2px solid var(--line); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
         .filter-list { max-height: 300px; overflow-y: auto; font-size: 14px; }
         .filter-item { padding: 8px 0; cursor: pointer; color: var(--sub); }
-        .filter-item.active { color: var(--primary); font-weight: 800; }
+        .filter-item:hover, .filter-item.active { color: var(--primary); font-weight: 800; }
 
-        /* [5] 상세 모달 및 가사 컨트롤 디자인 개선 */
+        /* [5] 상세 모달 및 가사 컨트롤 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: var(--card); width: 100%; max-width: 1050px; border-radius: 35px; padding: 40px; display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; height: 85vh; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
         .lyrics-area { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
         .lyrics-display { background: var(--bg); padding: 30px; border-radius: 25px; flex: 1; overflow-y: auto; white-space: pre-wrap; line-height: 2.3; font-size: 19px; color: var(--text); font-weight: 500; box-shadow: inset 0 2px 4px var(--shadow); }
         
-        /* 가사 컨트롤 세련되게 수정 */
         .lyrics-control { display: flex; align-items: center; gap: 20px; background: var(--card); padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px var(--shadow); flex-shrink: 0; }
         .input-num { width: 65px; padding: 10px; text-align: center; border-radius: 12px; border: 2px solid transparent; background: var(--bg); color: var(--text); font-weight: 800; font-size: 16px; outline: none; transition: all 0.3s; }
         .input-num:focus { border-color: var(--accent); background: var(--card); }
@@ -109,11 +109,16 @@
         .p-btn.active { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(163, 177, 255, 0.4); transform: translateY(-2px); }
 
         .modal-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: auto; flex-shrink: 0; }
-        .link-btn { display: flex; align-items: center; justify-content: center; padding: 14px; text-align: center; border-radius: 18px; text-decoration: none; font-weight: 800; font-size: 14px; color: #fff; box-shadow: 0 4px 6px var(--shadow); }
+        .link-btn { display: flex; align-items: center; justify-content: center; padding: 14px; text-align: center; border-radius: 18px; text-decoration: none; font-weight: 800; font-size: 14px; color: #fff; transition: 0.2s; box-shadow: 0 4px 6px var(--shadow); }
+        .link-btn:hover { filter: brightness(1.05); transform: translateY(-3px); }
         .close-btn { position: absolute; top: 25px; right: 30px; background: none; border: none; color: var(--sub); font-size: 35px; cursor: pointer; }
+
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--card); color: var(--text); padding: 15px 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-weight: 700; z-index: 3000; opacity: 0; visibility: hidden; transition: 0.3s; border: 2px solid var(--accent); }
+        .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
         .p1 { color: var(--text); } .p2 { color: #f56565; } .p3 { color: #4299e1; } .p4 { color: #48bb78; }
         footer { text-align: center; padding: 60px 20px; color: var(--sub); font-size: 13px; border-top: 2px solid var(--line); margin-top: 50px; line-height: 2; }
+        #loading { text-align: center; padding: 40px; color: var(--sub); display: none; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -130,7 +135,11 @@
                 <button class="add-btn" onclick="openAdmin()" id="addBtn">+ 추가</button>
             </div>
         </div>
-        <div class="search-box"><input type="text" id="searchInput" class="search-input" placeholder="제목, 가수, 장르 검색..." oninput="handleSearch()"></div>
+        <div class="search-box"><input type="text" id="searchInput" class="search-input" placeholder="제목, 가수, 장르를 검색하세요..." oninput="handleSearch()"></div>
+        
+        <div class="notice-bar">
+            💡 앨범 사진이 있는 것 중 잘못된 게 있다면 카페 게시글에 수정 요청 주세요.
+        </div>
     </header>
 
     <div id="memoToast" class="toast">등록된 메모가 없습니다.</div>
@@ -331,6 +340,7 @@
         document.getElementById('adminOverlay').style.display = 'flex';
         if(id) {
             const s = songDataList[id]; document.getElementById('edit_id').value = id;
+            document.getElementById('adminTitle').innerText = "노래 정보 수정";
             document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n장르: ${s.genre||''}\n키: ${s.key||''}\n이미지: ${s.imgUrl}\n유튜브 링크: ${s.clipUrl||''}\n가사원문 링크: ${s.lyricsLink||''}\n음원+가사 링크: ${s.audioLyricsUrl||''}\n노래방 링크: ${s.karaokeUrl||''}\n가사:\n${s.lyrics}`;
             setStatus(s.status || '완곡');
         } else {
@@ -366,4 +376,3 @@
 </script>
 </body>
 </html>
-
