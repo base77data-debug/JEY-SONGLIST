@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        /* [1] 테마 설정 (파스텔톤) */
+        /* [1] 파스텔톤 테마 설정 */
         :root { 
             --bg: #f0f4f8; --card: #ffffff; --text: #2d3748; --sub: #718096; --line: #e2e8f0;
             --input-bg: #ffffff; --primary: #667eea; --primary-text: #ffffff; --accent: #a3b1ff;
@@ -35,92 +35,84 @@
         .title-area h1 { margin: 0; font-size: 28px; font-weight: 800; color: var(--primary); }
         .controls { display: flex; gap: 10px; align-items: center; }
 
-        /* 링크 버튼 */
         .sns-link { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; text-decoration: none; font-weight: 900; font-size: 10px; color: #fff; transition: 0.2s; border: none; cursor: pointer; }
         .soop-btn { background-color: #4299e1; } .cafe-btn { background-color: #48bb78; }
-        .sns-link:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .sns-link:hover { transform: scale(1.05); }
 
         .icon-btn { width: 42px; height: 42px; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
-        .admin-toggle-btn { background: var(--primary); color: var(--primary-text); border: none; padding: 0 16px; height: 42px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; }
+        
+        /* [수정] 관리 버튼 이름 변경: 수정/추가 */
+        .admin-toggle-btn { background: var(--primary); color: var(--primary-text); border: none; padding: 0 16px; height: 42px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.2s; }
         .admin-toggle-btn.active { background: #f56565 !important; color: #fff !important; }
         .add-btn { background: #4299e1; color: #fff; border: none; padding: 0 16px; height: 42px; border-radius: 12px; display: none; font-weight: 700; cursor: pointer; }
+
+        /* [신규] 메모 버튼 스타일 */
+        .memo-btn { background: #faf089; color: #744210; font-size: 20px; border: 1px solid #ecc94b; }
+        [data-theme="dark"] .memo-btn { background: #ecc94b; color: #1a202c; }
+        [data-theme="pink"] .memo-btn { background: #fff5f7; color: #b83280; border-color: #fbb6ce; }
+
+        /* [신규] 알림 토스트 (메모 보여주기용) */
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--card); color: var(--text); padding: 15px 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-weight: 700; z-index: 3000; opacity: 0; visibility: hidden; transition: 0.3s; border: 2px solid var(--accent); max-width: 90%; text-align: center; }
+        .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
 
         .search-box { width: 100%; }
         .search-input { width: 100%; padding: 15px 20px; background: var(--input-bg); border: 2px solid var(--line); border-radius: 15px; color: var(--text); font-size: 16px; outline: none; }
 
-        /* [3] 관리자 입력 팝업 디자인 고도화 */
+        /* [3] 관리자 입력 팝업 */
         .admin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .admin-modal { background: var(--card); padding: 35px; border-radius: 30px; width: 100%; max-width: 680px; border: 1px solid var(--line); position: relative; max-height: 95vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
-        
         .helper-box { background: var(--bg); padding: 20px; border-radius: 20px; margin-bottom: 25px; border: 2px dashed var(--accent); }
-        .helper-box p { margin: 0 0 12px 0; font-size: 14px; font-weight: 800; }
         .helper-row { display: flex; gap: 8px; flex-wrap: wrap; }
         .helper-input { flex: 1; min-width: 200px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); font-size: 15px; background: var(--card); color: var(--text); }
-        .helper-btn { padding: 0 15px; height: 45px; border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: 700; border: none; color: white; transition: 0.2s; }
+        .helper-btn { padding: 0 15px; height: 45px; border-radius: 12px; cursor: pointer; font-size: 12px; font-weight: 700; border: none; color: white; }
         .btn-bugs { background: #ff3c00; } .btn-yt { background: #ff0000; } .btn-form { background: #a0aec0; }
         
         .admin-modal textarea { width: 100%; padding: 20px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 15px; margin-bottom: 20px; font-size: 16px; line-height: 1.6; resize: vertical; min-height: 350px; }
-        
-        /* [수정] 상태 선택 버튼 디자인 강조 */
         .status-selector { display: flex; gap: 10px; margin-bottom: 20px; }
-        .status-btn { flex: 1; padding: 14px; background: var(--bg); border: 2px solid var(--line); color: var(--sub); border-radius: 12px; cursor: pointer; font-weight: 800; transition: all 0.2s; }
-        .status-btn:hover { background: var(--line); }
-        .status-btn.active { background: var(--primary) !important; color: white !important; border-color: var(--primary) !important; box-shadow: 0 4px 10px var(--shadow); transform: translateY(-2px); }
+        .status-btn { flex: 1; padding: 12px; background: var(--bg); border: 2px solid var(--line); color: var(--sub); border-radius: 12px; cursor: pointer; font-weight: 800; }
+        .status-btn.active { background: var(--primary) !important; color: white !important; transform: translateY(-2px); }
 
-        /* [4] 메인 레이아웃 및 5열 그리드 */
+        /* [4] 메인 레이아웃 및 5열 카드 */
         .main-layout { display: flex; gap: 30px; align-items: flex-start; }
         aside { width: 220px; flex-shrink: 0; position: sticky; top: 20px; }
         .side-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
-        
         .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; }
-        .song-card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: 0.2s; }
-        .song-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px rgba(0,0,0,0.1); border-color: var(--accent); }
-        
+        .song-card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; }
+        .song-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px var(--shadow); border-color: var(--accent); }
         .edit-btn-group { display: none; position: absolute; top: 12px; right: 12px; gap: 6px; z-index: 10; }
         body.admin-mode .edit-btn-group { display: flex; }
         .edit-label { background: rgba(255,255,255,0.95); color: #2d3748; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
 
         .art-box { width: 100%; aspect-ratio: 1/1; background: var(--line); overflow: hidden; }
         .art-box img { width: 100%; height: 100%; object-fit: cover; }
-        
         .info { padding: 18px; }
         .title-row { font-size: 15px; font-weight: 700; margin-bottom: 8px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
-        /* [수정] 가수 이름 왼쪽, 뱃지 오른쪽 정렬 */
         .sub-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .card-artist { color: var(--sub); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-grow: 1; }
-        .badge-group { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-        
         .card-badge { font-size: 10px; padding: 4px 8px; border-radius: 6px; font-weight: 800; background: var(--bg); color: var(--sub); white-space: nowrap; border: 1px solid var(--line); }
         .bg-status { background: #c6f6d5 !important; color: #22543d !important; border: none; }
 
         aside h3 { font-size: 12px; color: var(--sub); margin: 30px 0 12px 0; border-bottom: 2px solid var(--line); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
         .filter-list { max-height: 300px; overflow-y: auto; font-size: 14px; }
-        .filter-item { padding: 8px 0; cursor: pointer; color: var(--sub); transition: 0.2s; }
-        .filter-item:hover, .filter-item.active { color: var(--primary); font-weight: 800; }
+        .filter-item { padding: 8px 0; cursor: pointer; color: var(--sub); }
+        .filter-item.active { color: var(--primary); font-weight: 800; }
 
-        /* [5] 상세 노래 정보 팝업 및 가사 컨트롤 */
+        /* [5] 상세 모달 및 버튼 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: var(--card); width: 100%; max-width: 1050px; border-radius: 35px; padding: 40px; display: grid; grid-template-columns: 320px 1fr; gap: 40px; position: relative; height: 85vh; overflow: hidden; }
         .lyrics-area { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
         .lyrics-display { background: var(--bg); padding: 30px; border-radius: 25px; flex: 1; overflow-y: auto; white-space: pre-wrap; line-height: 2.3; font-size: 19px; color: var(--text); font-weight: 500; box-shadow: inset 0 2px 4px var(--shadow); }
-        
-        .lyrics-control { display: flex; align-items: center; gap: 20px; background: var(--card); padding: 15px 25px; border-radius: 20px; flex-shrink: 0; box-shadow: 0 4px 15px var(--shadow); }
+        .lyrics-control { display: flex; align-items: center; gap: 20px; background: var(--card); padding: 15px 25px; border-radius: 20px; box-shadow: 0 4px 15px var(--shadow); flex-shrink: 0; }
         .input-num { width: 65px; padding: 10px; text-align: center; border-radius: 12px; border: 2px solid transparent; background: var(--bg); color: var(--text); font-weight: 800; font-size: 16px; outline: none; }
-        .input-num:focus { border-color: var(--accent); }
         .p-btn { padding: 10px 18px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; background: transparent; color: var(--sub); font-size: 14px; }
-        .p-btn.active { background: var(--accent); color: #fff; box-shadow: 0 4px 10px rgba(163, 177, 255, 0.4); }
+        .p-btn.active { background: var(--accent); color: #fff; }
 
-        /* 하단 2x2 버튼 배열 */
-        .modal-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; flex-shrink: 0; }
-        .link-btn { display: flex; align-items: center; justify-content: center; padding: 15px; text-align: center; border-radius: 15px; text-decoration: none; font-weight: 800; font-size: 14px; color: #fff; transition: 0.2s; box-shadow: 0 4px 6px var(--shadow); }
-        .link-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
-
+        .modal-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: auto; flex-shrink: 0; }
+        .link-btn { display: flex; align-items: center; justify-content: center; padding: 14px; text-align: center; border-radius: 18px; text-decoration: none; font-weight: 800; font-size: 14px; color: #fff; box-shadow: 0 4px 6px var(--shadow); }
         .close-btn { position: absolute; top: 25px; right: 30px; background: none; border: none; color: var(--sub); font-size: 35px; cursor: pointer; }
 
         .p1 { color: var(--text); } .p2 { color: #f56565; } .p3 { color: #4299e1; } .p4 { color: #48bb78; }
         footer { text-align: center; padding: 60px 20px; color: var(--sub); font-size: 13px; border-top: 2px solid var(--line); margin-top: 50px; line-height: 2; }
-        #loading { text-align: center; padding: 40px; color: var(--sub); display: none; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -131,13 +123,19 @@
             <div class="controls">
                 <a href="https://www.sooplive.co.kr/station/qw794" target="_blank" class="sns-link soop-btn">SOOP</a>
                 <a href="https://cafe.naver.com/jeykoreanfood" target="_blank" class="sns-link cafe-btn">CAFE</a>
-                <button class="icon-btn" onclick="cycleTheme()" id="themeCycleBtn">☀️</button>
-                <button class="admin-toggle-btn" onclick="toggleAdminMode()" id="adminToggle">관리 모드</button>
+                
+                <button class="icon-btn memo-btn" onclick="handleMemoClick()" title="공지/메모 보기">📝</button>
+                
+                <button class="icon-btn" onclick="cycleTheme()" id="themeCycleBtn" title="테마 변경">☀️</button>
+                
+                <button class="admin-toggle-btn" onclick="toggleAdminMode()" id="adminToggle">수정/추가</button>
                 <button class="add-btn" onclick="openAdmin()" id="addBtn">+ 추가</button>
             </div>
         </div>
         <div class="search-box"><input type="text" id="searchInput" class="search-input" placeholder="제목, 가수, 장르를 검색하세요..." oninput="handleSearch()"></div>
     </header>
+
+    <div id="memoToast" class="toast">공지사항이 없습니다.</div>
 
     <div id="adminOverlay" class="admin-overlay" onclick="closeAdmin()">
         <div class="admin-modal" onclick="event.stopPropagation()">
@@ -151,16 +149,13 @@
                     <button type="button" class="helper-btn btn-form" onclick="fillTemplate()">양식 불러오기</button>
                 </div>
             </div>
-
             <div class="status-selector">
                 <button type="button" id="btn_full" class="status-btn active" onclick="setStatus('완곡')">완곡</button>
                 <button type="button" id="btn_half" class="status-btn" onclick="setStatus('1절')">1절</button>
                 <button type="button" id="btn_etc" class="status-btn" onclick="setStatus('기타')">기타</button>
                 <input type="hidden" id="f_status" value="완곡">
             </div>
-            
             <textarea id="f_bulk_input" rows="12" placeholder="제목:&#10;가수:&#10;장르:&#10;키:&#10;이미지:&#10;유튜브 링크:&#10;가사원문 링크:&#10;음원+가사 링크:&#10;노래방 링크:&#10;가사:"></textarea>
-            
             <div style="display:flex; gap:10px;">
                 <input type="hidden" id="edit_id">
                 <button onclick="submitData()" class="admin-toggle-btn" style="flex:2; padding:15px; font-size:16px;">데이터 저장하기</button>
@@ -175,7 +170,7 @@
                 <div style="font-size: 11px; color: var(--sub); margin-bottom: 5px; font-weight: 800;">TOTAL SONGS</div>
                 <div style="font-size: 28px; font-weight: 900;"><span id="totalCount">0</span>곡</div>
             </div>
-            <button onclick="resetFilters()" style="width:100%; padding:14px; background:var(--line); color:var(--text); border:none; border-radius:15px; cursor:pointer; font-weight:800; margin-bottom:15px;">🔄 필터 초기화</button>
+            <button onclick="resetFilters()" style="width:100%; padding:14px; background:var(--line); color:var(--sub); border:none; border-radius:15px; cursor:pointer; font-weight:800; margin-bottom:15px;">🔄 필터 초기화</button>
             <h3>정렬</h3>
             <select id="sortSelect" onchange="handleSearch()" style="width: 100%; background: var(--card); color: var(--text); border: 2px solid var(--line); padding: 12px; border-radius: 12px; outline:none; font-weight:600;">
                 <option value="latest">최신순</option>
@@ -187,7 +182,7 @@
         </aside>
         <div style="flex-grow: 1;">
             <div class="song-grid" id="mainGrid"></div>
-            <div id="loading">노래를 불러오고 있습니다...</div>
+            <div id="loading" style="text-align:center; padding:40px; color:var(--sub); display:none; font-weight:700;">불러오는 중...</div>
         </div>
     </div>
     <footer>
@@ -217,23 +212,35 @@
 </div>
 
 <script>
-    // [1] Firebase 초기화
     const ADMIN_PW = "1234";
     const firebaseConfig = { apiKey: "AIzaSyAWAe1oGCH3-bT97fZyB8qW_hFE5aOT9BE", authDomain: "jey-songbook-1369e.firebaseapp.com", projectId: "jey-songbook-1369e", storageBucket: "jey-songbook-1369e.firebasestorage.app", messagingSenderId: "541154865578", appId: "1:541154865578:web:1a71c78e9d0b7eefa7bbd3" };
     firebase.initializeApp(firebaseConfig); const db = firebase.firestore();
 
-    let allSongs = [], songDataList = {}, selectedCategory = '전체', selectedArtist = '전체', isAdmin = false;
+    let allSongs = [], songDataList = {}, selectedCategory = '전체', selectedArtist = '전체', isAdmin = false, currentMemo = "";
     let currentLyrics = "", currentPersonCount = 1, displayLimit = 15, filteredSongs = [], themeState = 0;
 
-    // [2] 유틸리티 기능
-    function searchBugs() { const q = document.getElementById('helperInput').value; if(!q) return alert("검색어를 입력하세요!"); window.open(`https://music.bugs.co.kr/search/track?q=${encodeURIComponent(q)}`, '_blank'); }
-    function searchYT() { const q = document.getElementById('helperInput').value; if(!q) return alert("검색어를 입력하세요!"); window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank'); }
+    // [메모 기능]
+    db.collection("settings").doc("memo").onSnapshot(doc => { if(doc.exists) currentMemo = doc.data().text || ""; });
+
+    function handleMemoClick() {
+        if(isAdmin) {
+            const newMemo = prompt("방문자들에게 보여줄 메모를 입력하세요:", currentMemo);
+            if(newMemo !== null) db.collection("settings").doc("memo").set({ text: newMemo }).then(() => alert("메모 저장 완료!"));
+        } else {
+            const toast = document.getElementById('memoToast');
+            toast.innerText = currentMemo || "등록된 메모가 없습니다.";
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    }
+
+    function searchBugs() { const q = document.getElementById('helperInput').value; if(!q) return alert("입력하세요!"); window.open(`https://music.bugs.co.kr/search/track?q=${encodeURIComponent(q)}`, '_blank'); }
+    function searchYT() { const q = document.getElementById('helperInput').value; if(!q) return alert("입력하세요!"); window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank'); }
     function fillTemplate() { document.getElementById('f_bulk_input').value = "제목: \n가수: \n장르: \n키: \n이미지: \n유튜브 링크: \n가사원문 링크: \n음원+가사 링크: \n노래방 링크: \n가사: "; }
 
     const genreColors = { '힙합': { bg: '#fed7d7', text: '#9b2c2c' }, 'R&B': { bg: '#e9d8fd', text: '#553c9a' }, '댄스': { bg: '#bee3f8', text: '#2c5282' }, '발라드': { bg: '#c6f6d5', text: '#22543d' }, 'POP': { bg: '#fed7e2', text: '#97266d' } };
     function getGenreStyle(g) { const c = genreColors[g] || { bg: '#edf2f7', text: '#4a5568' }; return `background: ${c.bg}; color: ${c.text};`; }
 
-    // [3] 테마 및 제목 순환
     function cycleTheme() {
         themeState = (themeState + 1) % 3;
         const html = document.documentElement; const title = document.getElementById('siteTitle'); const btn = document.getElementById('themeCycleBtn');
@@ -242,13 +249,11 @@
         else if (themeState === 2) { html.setAttribute('data-theme', 'pink'); title.innerText = "곤듀 노래 목록"; btn.innerText = "💖"; }
     }
 
-    // [4] 관리자 모드 제어
     function toggleAdminMode() {
         if (!isAdmin) { if (prompt("관리자 비밀번호:") === ADMIN_PW) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('adminToggle').classList.add('active'); document.getElementById('addBtn').style.display = "block"; renderGrid(); } }
         else { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('adminToggle').classList.remove('active'); document.getElementById('addBtn').style.display = "none"; renderGrid(); }
     }
 
-    // [5] 데이터 로드 및 필터
     db.collection("songs").orderBy("createdAt", "desc").onSnapshot(snap => {
         allSongs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         allSongs.forEach(s => songDataList[s.id] = s);
@@ -305,13 +310,12 @@
         document.getElementById('artistFilters').innerHTML = artists.map(a => `<div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>`).join('');
     }
 
-    // [6] 상세 팝업 오픈 (노래방 버튼 추가)
     function openPop(id) {
         const s = songDataList[id]; if(!s) return;
         currentLyrics = s.lyrics || "";
         document.getElementById('modalSide').innerHTML = `
             <div style="width:100%; aspect-ratio:1; border-radius:25px; overflow:hidden; margin-bottom:20px; border:2px solid var(--line); box-shadow: 0 10px 20px var(--shadow);"><img src="${s.imgUrl}" style="width:100%; height:100%; object-fit:cover;"></div>
-            <div style="font-size:28px; font-weight:900; margin-bottom:8px; color:var(--primary); line-height:1.2;">${s.title}</div>
+            <div style="font-size:26px; font-weight:900; margin-bottom:8px; color:var(--primary); line-height:1.2;">${s.title}</div>
             <div style="font-size:18px; color:var(--sub); margin-bottom:25px; font-weight:700;">${s.artist}</div>
             <div style="background:var(--bg); padding:20px; border-radius:20px; font-size:15px; line-height:1.8; border:1px solid var(--line);">
                 <div><b>장르:</b> <span class="card-badge" style="${getGenreStyle(s.genre)}">${s.genre || '-'}</span></div>
@@ -319,7 +323,6 @@
                 <div style="margin-top:8px;"><b>Key:</b> ${s.key || 'N/A'}</div>
             </div>
         `;
-        // 2x2 버튼 배열 구성
         document.getElementById('modalBtnArea').innerHTML = `
             ${s.clipUrl ? `<a href="${s.clipUrl}" target="_blank" class="link-btn" style="background:#63b3ed;">음원 or 뮤비</a>` : ''}
             ${s.audioLyricsUrl ? `<a href="${s.audioLyricsUrl}" target="_blank" class="link-btn" style="background:#9f7aea;">음원+가사</a>` : ''}
@@ -337,17 +340,8 @@
     }
 
     function setPerson(n, b = null) { currentPersonCount = n; if(b) { document.querySelectorAll('.p-btn').forEach(btn => btn.classList.remove('active')); b.classList.add('active'); } updateLyrics(); }
+    function setStatus(val) { document.getElementById('f_status').value = val; document.querySelectorAll('.status-btn').forEach(btn => { if(btn.innerText === val) btn.classList.add('active'); else btn.classList.remove('active'); }); }
 
-    // [수정] 상태 변경 함수 (강제 갱신)
-    function setStatus(val) {
-        document.getElementById('f_status').value = val;
-        document.querySelectorAll('.status-btn').forEach(btn => {
-            if(btn.innerText === val) btn.classList.add('active');
-            else btn.classList.remove('active');
-        });
-    }
-
-    // [7] 관리자 창 제어 (상태 버튼 동기화 수리)
     function openAdmin(id = null) {
         document.getElementById('adminOverlay').style.display = 'flex';
         if(id) {
@@ -381,7 +375,7 @@
             else if(isL) ly.push(l);
         });
         data.lyrics = ly.join('\n').trim();
-        if(!data.title) return alert("제목을 입력해주세요!");
+        if(!data.title) return alert("제목 입력 필수!");
         db.collection("songs").doc(editId || undefined).set(data, {merge:true}).then(() => { alert("저장완료!"); closeAdmin(); });
     }
 
@@ -392,3 +386,4 @@
 </script>
 </body>
 </html>
+
