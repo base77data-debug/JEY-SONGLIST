@@ -29,14 +29,25 @@
         * { box-sizing: border-box; font-family: "Pretendard", sans-serif; transition: background 0.3s, border 0.3s, color 0.3s, box-shadow 0.3s; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 15px; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 1400px; margin: 0 auto; }
-        
         .top-notice { font-size: 13px; color: var(--sub); text-align: right; margin-bottom: 10px; opacity: 0.9; font-weight: 600; }
+
+        /* [신규] 커스텀 모달 팝업 스타일 */
+        #customModalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 6000; align-items: center; justify-content: center; }
+        .custom-modal-box { background: var(--card); padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px var(--shadow); text-align: center; border: 1px solid var(--line); }
+        .custom-modal-title { font-size: 20px; font-weight: 800; margin-bottom: 15px; color: var(--primary); }
+        .custom-modal-msg { font-size: 16px; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+        .custom-modal-input { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid var(--line); border-radius: 12px; background: var(--input-bg); color: var(--text); font-size: 15px; outline: none; display: none; }
+        .custom-modal-input:focus { border-color: var(--accent); }
+        .custom-modal-btns { display: flex; gap: 10px; justify-content: center; }
+        .custom-modal-btn { padding: 10px 20px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.2s; }
+        .btn-confirm { background: var(--primary); color: white; }
+        .btn-cancel { background: var(--line); color: var(--sub); display: none; }
+        .custom-modal-btn:hover { filter: brightness(1.05); transform: translateY(-2px); }
 
         header { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; border-bottom: 2px solid var(--line); padding-bottom: 20px; }
         .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         .title-area h1 { margin: 0; font-size: 26px; font-weight: 800; color: var(--primary); }
         .controls { display: flex; gap: 8px; align-items: center; }
-
         .sns-link { display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 10px; text-decoration: none; font-weight: 900; font-size: 9px; color: #fff; border: none; cursor: pointer; }
         .soop-btn { background-color: #4299e1; } .cafe-btn { background-color: #48bb78; }
         .icon-btn { width: 38px; height: 38px; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 10px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
@@ -44,37 +55,30 @@
         .admin-toggle-btn { background: var(--primary); color: var(--primary-text); border: none; padding: 0 14px; height: 38px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; }
         .admin-toggle-btn.active { background: #f56565 !important; color: #fff !important; }
         .add-btn { background: #4299e1; color: #fff; border: none; padding: 0 14px; height: 38px; border-radius: 10px; display: none; font-weight: 700; cursor: pointer; }
-        
         .search-box { width: 100%; }
         .search-input { width: 100%; padding: 14px 20px; background: var(--input-bg); border: 2px solid var(--line); border-radius: 15px; color: var(--text); font-size: 15px; outline: none; }
 
-        /* [3] 사이드바 & 랜덤 버튼 */
         .main-layout { display: flex; gap: 30px; align-items: flex-start; }
         aside { width: 220px; flex-shrink: 0; position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto; padding-right: 5px; }
         .side-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
-        
         .random-btn-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
         .random-btn { width: 100%; padding: 12px; border-radius: 12px; border: none; cursor: pointer; font-weight: 800; font-size: 13px; transition: 0.2s; box-shadow: 0 4px 6px var(--shadow); }
         .btn-all-rand { background: #a3b1ff; color: #2d3748; }
         .btn-art-rand { background: #c6f6d5; color: #22543d; }
         .random-btn:hover { transform: translateY(-3px); filter: brightness(1.05); }
 
-        /* [4] 룰렛 오버레이 디자인 */
         #rouletteOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 5000; align-items: center; justify-content: center; flex-direction: column; color: white; }
         .roulette-card { width: 280px; height: 380px; background: white; border-radius: 30px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 20px; box-shadow: 0 0 30px #a3b1ff; }
         .roulette-img { width: 240px; height: 240px; border-radius: 20px; object-fit: cover; margin-bottom: 20px; }
         .roulette-text { color: #2d3748; font-size: 20px; font-weight: 800; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .roulette-sub { color: #718096; font-size: 16px; margin-top: 5px; }
 
-        /* [5] 카드 그리드 & 정렬 */
         .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
         .song-card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; }
         .song-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px var(--shadow); border-color: var(--accent); }
-        
         .edit-btn-group { display: none; position: absolute; top: 10px; right: 10px; gap: 6px; z-index: 10; }
         body.admin-mode .edit-btn-group { display: flex; }
         .edit-label { background: rgba(255,255,255,0.95); color: #2d3748; padding: 5px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
-        
         .art-box { width: 100%; aspect-ratio: 1/1; background: var(--line); overflow: hidden; }
         .art-box img { width: 100%; height: 100%; object-fit: cover; }
         .info { padding: 18px; }
@@ -90,7 +94,6 @@
         .filter-item { padding: 8px 0; cursor: pointer; color: var(--sub); transition: 0.2s; }
         .filter-item:hover, .filter-item.active { color: var(--primary); font-weight: 800; }
 
-        /* [6] 상세 모달 & 가사 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
         .modal-content { background: var(--card); width: 100%; max-width: 1050px; border-radius: 35px; padding: 35px; display: grid; grid-template-columns: 320px 1fr; gap: 35px; position: relative; height: 85vh; overflow: hidden; }
         .lyrics-area { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
@@ -103,7 +106,6 @@
         .link-btn { display: flex; align-items: center; justify-content: center; padding: 14px; text-align: center; border-radius: 15px; text-decoration: none; font-weight: 800; font-size: 13px; color: #fff; box-shadow: 0 4px 6px var(--shadow); transition: 0.2s; }
         .close-btn { position: absolute; top: 20px; right: 25px; background: none; border: none; color: var(--sub); font-size: 35px; cursor: pointer; }
 
-        /* [7] 관리자 팝업 */
         .admin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .admin-modal { background: var(--card); padding: 35px; border-radius: 30px; width: 100%; max-width: 680px; border: 1px solid var(--line); position: relative; max-height: 95vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
         .helper-box { background: var(--bg); padding: 20px; border-radius: 20px; margin-bottom: 20px; border: 2px dashed var(--accent); }
@@ -144,7 +146,7 @@
                 <button class="add-btn" onclick="openAdmin()" id="addBtn">+ 추가</button>
             </div>
         </div>
-        <div class="search-box"><input type="text" id="searchInput" class="search-input" placeholder="제목, 가수, 장르 검색..." oninput="handleSearch()"></div>
+        <div class="search-box"><input type="text" id="searchInput" class="search-input" placeholder="제목, 가수, 장르를 검색하세요..." oninput="handleSearch()"></div>
     </header>
 
     <div id="rouletteOverlay">
@@ -153,6 +155,18 @@
             <img src="" id="rouletteImg" class="roulette-img">
             <div id="rouletteTitle" class="roulette-text">곡 제목</div>
             <div id="rouletteArtist" class="roulette-sub">가수 이름</div>
+        </div>
+    </div>
+
+    <div id="customModalOverlay">
+        <div class="custom-modal-box">
+            <div id="customModalTitle" class="custom-modal-title"></div>
+            <div id="customModalMsg" class="custom-modal-msg"></div>
+            <input type="text" id="customModalInput" class="custom-modal-input">
+            <div class="custom-modal-btns">
+                <button id="customModalCancelBtn" class="custom-modal-btn btn-cancel">취소</button>
+                <button id="customModalConfirmBtn" class="custom-modal-btn btn-confirm">확인</button>
+            </div>
         </div>
     </div>
 
@@ -191,12 +205,10 @@
                 <div style="font-size: 28px; font-weight: 900;"><span id="totalCount">0</span>곡</div>
             </div>
             <button onclick="resetFilters()" style="width:100%; padding:14px; background:var(--line); color:var(--text); border:none; border-radius:15px; cursor:pointer; font-weight:800; margin-bottom:15px;">🔄 필터 초기화</button>
-            
             <div class="random-btn-group">
                 <button onclick="pickRandomAll()" class="random-btn btn-all-rand">🎲 전체 랜덤 곡</button>
                 <button onclick="pickRandomSearch()" class="random-btn btn-art-rand">🎤 가수/제목 랜덤</button>
             </div>
-
             <h3>장르</h3><div id="categoryFilters" class="filter-list"></div>
             <h3>가수별</h3><div id="artistFilters" class="filter-list"></div>
         </aside>
@@ -240,9 +252,37 @@
 
     db.collection("settings").doc("memo").onSnapshot(doc => { if(doc.exists) currentMemo = doc.data().text || ""; });
 
-    // [신규] 룰렛 효과 함수
+    // [신규] 커스텀 모달 함수
+    let modalCallback = null;
+    function showCustomModal(type, title, message, callback = null) {
+        modalCallback = callback;
+        const overlay = document.getElementById('customModalOverlay');
+        const titleEl = document.getElementById('customModalTitle');
+        const msgEl = document.getElementById('customModalMsg');
+        const inputEl = document.getElementById('customModalInput');
+        const cancelBtn = document.getElementById('customModalCancelBtn');
+
+        titleEl.innerText = title;
+        msgEl.innerText = message;
+        inputEl.value = '';
+        inputEl.style.display = type === 'prompt' ? 'block' : 'none';
+        cancelBtn.style.display = type !== 'alert' ? 'block' : 'none';
+        overlay.style.display = 'flex';
+        if (type === 'prompt') inputEl.focus();
+    }
+
+    document.getElementById('customModalConfirmBtn').onclick = () => {
+        const inputVal = document.getElementById('customModalInput').value;
+        document.getElementById('customModalOverlay').style.display = 'none';
+        if (modalCallback) modalCallback(inputVal);
+    };
+    document.getElementById('customModalCancelBtn').onclick = () => {
+        document.getElementById('customModalOverlay').style.display = 'none';
+        if (modalCallback) modalCallback(null);
+    };
+
     function startRoulette(candidates) {
-        if (candidates.length === 0) return alert("뽑을 곡이 없습니다.");
+        if (candidates.length === 0) return showCustomModal('alert', '알림', "뽑을 곡이 없습니다.");
         const overlay = document.getElementById('rouletteOverlay');
         const img = document.getElementById('rouletteImg');
         const title = document.getElementById('rouletteTitle');
@@ -256,7 +296,7 @@
             title.innerText = temp.title;
             artist.innerText = temp.artist;
             count++;
-            if (count > 25) { // 2.5초 정도 후에 정지
+            if (count > 25) {
                 clearInterval(interval);
                 const winner = temp;
                 setTimeout(() => {
@@ -270,32 +310,31 @@
     function pickRandomAll() { startRoulette(allSongs); }
 
     function pickRandomSearch() {
-        const keyword = prompt("가수 이름이나 노래 제목의 일부를 입력하세요:");
-        if (keyword === null) return;
-        if (!keyword.trim()) return alert("검색어를 입력해주세요!");
-        
-        const matches = allSongs.filter(s => 
-            s.title.toLowerCase().includes(keyword.toLowerCase()) || 
-            s.artist.toLowerCase().includes(keyword.toLowerCase())
-        );
-        
-        if (matches.length === 0) return alert(`'${keyword}'을 포함한 곡이 없습니다.`);
-        startRoulette(matches);
+        showCustomModal('prompt', '가수/제목 랜덤', "가수 이름이나 노래 제목의 일부를 입력하세요:", (keyword) => {
+            if (keyword === null) return;
+            if (!keyword.trim()) return showCustomModal('alert', '알림', "검색어를 입력해주세요!");
+            const matches = allSongs.filter(s => 
+                s.title.toLowerCase().includes(keyword.toLowerCase()) || 
+                s.artist.toLowerCase().includes(keyword.toLowerCase())
+            );
+            if (matches.length === 0) return showCustomModal('alert', '알림', `'${keyword}'을 포함한 곡이 없습니다.`);
+            startRoulette(matches);
+        });
     }
 
-    // [기존 유틸리티]
     function handleMemoClick() {
         if(isAdmin) {
-            const newMemo = prompt("방문자들에게 보여줄 메모를 입력하세요:", currentMemo);
-            if(newMemo !== null) db.collection("settings").doc("memo").set({ text: newMemo }).then(() => alert("메모 저장 완료!"));
+            showCustomModal('prompt', '메모 수정', "방문자들에게 보여줄 메모를 입력하세요:", (newMemo) => {
+                if(newMemo !== null) db.collection("settings").doc("memo").set({ text: newMemo }).then(() => showCustomModal('alert', '완료', "메모 저장 완료!"));
+            });
         } else {
             const toast = document.getElementById('memoToast'); toast.innerText = currentMemo || "등록된 메모가 없습니다.";
             toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000);
         }
     }
 
-    function searchBugs() { const q = document.getElementById('helperInput').value; if(!q) return alert("곡 제목-가수 입력!"); window.open(`https://music.bugs.co.kr/search/track?q=${encodeURIComponent(q)}`, '_blank'); }
-    function searchYT() { const q = document.getElementById('helperInput').value; if(!q) return alert("곡 제목-가수 입력!"); window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank'); }
+    function searchBugs() { const q = document.getElementById('helperInput').value; if(!q) return showCustomModal('alert', '알림', "곡 제목-가수 입력!"); window.open(`https://music.bugs.co.kr/search/track?q=${encodeURIComponent(q)}`, '_blank'); }
+    function searchYT() { const q = document.getElementById('helperInput').value; if(!q) return showCustomModal('alert', '알림', "곡 제목-가수 입력!"); window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, '_blank'); }
     function fillTemplate() { document.getElementById('f_bulk_input').value = "제목: \n가수: \n장르: \n키: \n이미지: \n유튜브 링크: \n가사원문 링크: \n음원+가사 링크: \n노래방 링크: \n가사: "; }
 
     function cycleTheme() {
@@ -307,8 +346,11 @@
     }
 
     function toggleAdminMode() {
-        if (!isAdmin) { if (prompt("관리자 비밀번호:") === ADMIN_PW) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('adminToggle').classList.add('active'); document.getElementById('addBtn').style.display = "block"; renderGrid(); } }
-        else { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('adminToggle').classList.remove('active'); document.getElementById('addBtn').style.display = "none"; renderGrid(); }
+        if (!isAdmin) {
+            showCustomModal('prompt', '관리자 인증', "관리자 비밀번호를 입력하세요:", (pw) => {
+                if (pw === ADMIN_PW) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('adminToggle').classList.add('active'); document.getElementById('addBtn').style.display = "block"; renderGrid(); }
+            });
+        } else { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('adminToggle').classList.remove('active'); document.getElementById('addBtn').style.display = "none"; renderGrid(); }
     }
 
     db.collection("songs").orderBy("createdAt", "desc").onSnapshot(snap => {
@@ -358,8 +400,7 @@
     function updateFilterUI() {
         const genres = ['전체', ...new Set(allSongs.map(s => s.genre).filter(Boolean))];
         document.getElementById('categoryFilters').innerHTML = genres.map(g => `<div class="filter-item ${selectedCategory===g?'active':''}" onclick="selectedCategory='${g}'; handleSearch(); updateFilterUI();">${g}</div>`).join('');
-        const artsRaw = [...new Set(allSongs.map(s => s.artist))].sort((a,b) => a.localeCompare(b, 'ko'));
-        const artists = ['전체', ...artsRaw];
+        const artists = ['전체', ...[...new Set(allSongs.map(s => s.artist))].sort((a,b) => a.localeCompare(b, 'ko'))];
         document.getElementById('artistFilters').innerHTML = artists.map(a => `<div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>`).join('');
     }
 
@@ -399,6 +440,7 @@
         document.getElementById('adminOverlay').style.display = 'flex';
         if(id) {
             const s = songDataList[id]; document.getElementById('edit_id').value = id;
+            document.getElementById('adminTitle').innerText = "노래 정보 수정";
             document.getElementById('f_bulk_input').value = `제목: ${s.title}\n가수: ${s.artist}\n장르: ${s.genre||''}\n키: ${s.key||''}\n이미지: ${s.imgUrl}\n유튜브 링크: ${s.clipUrl||''}\n가사원문 링크: ${s.lyricsLink||''}\n음원+가사 링크: ${s.audioLyricsUrl||''}\n노래방 링크: ${s.karaokeUrl||''}\n가사:\n${s.lyrics}`;
             setStatus(s.status || '완곡');
         } else {
@@ -421,15 +463,22 @@
             else if(r.startsWith('이미지:')) data.imgUrl = r.replace('이미지:','').trim();
             else if(r.startsWith('유튜브 링크:')) data.clipUrl = r.replace('유튜브 링크:','').trim();
             else if(r.startsWith('가사원문 링크:')) data.lyricsLink = r.replace('가사원문 링크:','').trim();
+            else if(r.startsWith('가사링크:')) data.lyricsLink = r.replace('가사링크:','').trim();
             else if(r.startsWith('음원+가사 링크:')) data.audioLyricsUrl = r.replace('음원+가사 링크:','').trim();
             else if(r.startsWith('노래방 링크:')) data.karaokeUrl = r.replace('노래방 링크:','').trim();
             else if(r.startsWith('가사:')) { isL = true; const f = l.split('가사:')[1]?.trim(); if(f) ly.push(f); }
             else if(isL) ly.push(l);
         });
-        db.collection("songs").doc(editId || undefined).set(data, {merge:true}).then(() => { alert("저장완료!"); closeAdmin(); });
+        data.lyrics = ly.join('\n').trim();
+        if(!data.title) return showCustomModal('alert', '알림', "제목 필수!");
+        db.collection("songs").doc(editId || undefined).set(data, {merge:true}).then(() => { showCustomModal('alert', '완료', "저장완료!"); closeAdmin(); });
     }
 
-    async function deleteSong(id) { if(confirm("삭제?")) await db.collection("songs").doc(id).delete(); }
+    async function deleteSong(id) {
+        showCustomModal('confirm', '삭제 확인', "정말 삭제하시겠습니까?", async (confirm) => {
+            if (confirm) await db.collection("songs").doc(id).delete();
+        });
+    }
     function closeAdmin() { document.getElementById('adminOverlay').style.display = 'none'; }
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     function resetFilters() { selectedCategory = '전체'; selectedArtist = '전체'; document.getElementById('searchInput').value = ""; handleSearch(); updateFilterUI(); }
