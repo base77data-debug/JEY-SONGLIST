@@ -47,29 +47,29 @@
         .search-box { width: 100%; }
         .search-input { width: 100%; padding: 14px 20px; background: var(--input-bg); border: 2px solid var(--line); border-radius: 15px; color: var(--text); font-size: 15px; outline: none; }
 
-        /* [3] 사이드바 & 랜덤 버튼 */
+        /* [3] 커스텀 모달 팝업 */
+        #customModalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 8000; align-items: center; justify-content: center; }
+        .custom-modal-box { background: var(--card); padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px var(--shadow); text-align: center; border: 1px solid var(--line); }
+        .custom-modal-title { font-size: 20px; font-weight: 800; margin-bottom: 15px; color: var(--primary); }
+        .custom-modal-msg { font-size: 16px; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
+        .custom-modal-input { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid var(--line); border-radius: 12px; background: var(--input-bg); color: var(--text); font-size: 15px; outline: none; display: none; }
+        .custom-modal-btns { display: flex; gap: 10px; justify-content: center; }
+        .custom-modal-btn { padding: 10px 20px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-size: 14px; }
+        .btn-confirm { background: var(--primary); color: white; }
+        .btn-cancel { background: var(--line); color: var(--sub); display: none; }
+
+        /* [4] 메인 레이아웃 및 랜덤 */
         .main-layout { display: flex; gap: 30px; align-items: flex-start; }
         aside { width: 220px; flex-shrink: 0; position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto; padding-right: 5px; }
         .side-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
-        
-        .random-btn { width: 100%; padding: 15px; border-radius: 15px; border: none; cursor: pointer; font-weight: 900; font-size: 15px; background: #a3b1ff; color: #2d3748; margin-bottom: 20px; box-shadow: 0 4px 10px var(--shadow); transition: 0.2s; }
-        .random-btn:hover { transform: translateY(-3px); filter: brightness(1.05); }
-
-        /* [4] 랜덤 모달 디자인 */
-        .random-modal-box { max-width: 500px !important; }
-        .rand-section { margin-bottom: 20px; text-align: left; }
-        .rand-section-title { font-size: 12px; font-weight: 800; color: var(--sub); margin-bottom: 10px; text-transform: uppercase; }
-        .rand-list-wrapper { display: flex; flex-wrap: wrap; gap: 6px; max-height: 120px; overflow-y: auto; padding: 5px; background: var(--bg); border-radius: 12px; }
-        .rand-chip { padding: 6px 12px; border-radius: 8px; background: var(--card); border: 1px solid var(--line); font-size: 12px; cursor: pointer; font-weight: 600; color: var(--sub); }
-        .rand-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .random-btn { width: 100%; padding: 15px; border-radius: 15px; border: none; cursor: pointer; font-weight: 900; font-size: 15px; background: #a3b1ff; color: #2d3748; margin-bottom: 20px; box-shadow: 0 4px 10px var(--shadow); }
 
         #rouletteOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 7000; align-items: center; justify-content: center; flex-direction: column; color: white; }
         .roulette-card { width: 280px; height: 380px; background: white; border-radius: 30px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 20px; box-shadow: 0 0 30px #a3b1ff; }
         .roulette-img { width: 240px; height: 240px; border-radius: 20px; object-fit: cover; margin-bottom: 20px; }
         .roulette-text { color: #2d3748; font-size: 20px; font-weight: 800; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .roulette-sub { color: #718096; font-size: 16px; margin-top: 5px; }
 
-        /* [5] 카드 및 그리드 */
+        /* [5] 카드 그리드 & 정렬 고정 */
         .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
         .song-card { background: var(--card); border-radius: 20px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; }
         .song-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px var(--shadow); border-color: var(--accent); }
@@ -79,9 +79,11 @@
         .art-box { width: 100%; aspect-ratio: 1/1; background: var(--line); overflow: hidden; }
         .art-box img { width: 100%; height: 100%; object-fit: cover; }
         .info { padding: 18px; }
-        .title-row { font-size: 14px; font-weight: 700; margin-bottom: 10px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+        .title-row { font-size: 14px; font-weight: 700; margin-bottom: 10px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
         .sub-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; }
         .card-artist { color: var(--sub); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: left; }
+        .badge-group { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
         .card-badge { font-size: 9px; padding: 3px 6px; border-radius: 6px; font-weight: 800; background: var(--bg); color: var(--sub); white-space: nowrap; border: 1px solid var(--line); }
         .bg-status { background: #c6f6d5 !important; color: #22543d !important; border: none; }
 
@@ -90,7 +92,7 @@
         .filter-item { padding: 8px 0; cursor: pointer; color: var(--sub); transition: 0.2s; }
         .filter-item:hover, .filter-item.active { color: var(--primary); font-weight: 800; }
 
-        /* [6] 상세 모달 & 커스텀 팝업 */
+        /* [6] 상세 모달 & 랜덤 필터 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
         .modal-content { background: var(--card); width: 100%; max-width: 1050px; border-radius: 35px; padding: 35px; display: grid; grid-template-columns: 320px 1fr; gap: 35px; position: relative; height: 85vh; overflow: hidden; }
         .lyrics-area { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
@@ -103,15 +105,9 @@
         .link-btn { display: flex; align-items: center; justify-content: center; padding: 14px; text-align: center; border-radius: 15px; text-decoration: none; font-weight: 800; font-size: 13px; color: #fff; box-shadow: 0 4px 6px var(--shadow); transition: 0.2s; }
         .close-btn { position: absolute; top: 20px; right: 25px; background: none; border: none; color: var(--sub); font-size: 35px; cursor: pointer; }
 
-        #customModalOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 6000; align-items: center; justify-content: center; }
-        .custom-modal-box { background: var(--card); padding: 30px; border-radius: 25px; width: 90%; max-width: 400px; box-shadow: 0 10px 25px var(--shadow); text-align: center; border: 1px solid var(--line); }
-        .custom-modal-title { font-size: 20px; font-weight: 800; margin-bottom: 15px; color: var(--primary); }
-        .custom-modal-msg { font-size: 16px; color: var(--text); margin-bottom: 20px; line-height: 1.5; }
-        .custom-modal-input { width: 100%; padding: 12px; margin-bottom: 20px; border: 2px solid var(--line); border-radius: 12px; background: var(--input-bg); color: var(--text); font-size: 15px; outline: none; display: none; }
-        .custom-modal-btns { display: flex; gap: 10px; justify-content: center; }
-        .custom-modal-btn { padding: 10px 20px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700; font-size: 14px; transition: 0.2s; }
-        .btn-confirm { background: var(--primary); color: white; }
-        .btn-cancel { background: var(--line); color: var(--sub); display: none; }
+        .rand-list-wrapper { display: flex; flex-wrap: wrap; gap: 6px; max-height: 120px; overflow-y: auto; padding: 8px; background: var(--bg); border-radius: 12px; }
+        .rand-chip { padding: 6px 12px; border-radius: 8px; background: var(--card); border: 1px solid var(--line); font-size: 12px; cursor: pointer; font-weight: 600; color: var(--sub); }
+        .rand-chip.active { background: var(--accent); color: white; border-color: var(--accent); }
 
         @media (max-width: 768px) {
             .main-layout { flex-direction: column; }
@@ -146,28 +142,28 @@
     </header>
 
     <div id="rouletteOverlay">
-        <div style="font-size: 32px; font-weight: 900; margin-bottom: 20px; color: #a3b1ff;">🎲 과연 어떤 노래가...?</div>
+        <div style="font-size: 28px; font-weight: 900; margin-bottom: 20px; color: #a3b1ff;">🎲 과연 어떤 노래가...?</div>
         <div class="roulette-card">
             <img src="" id="rouletteImg" class="roulette-img">
             <div id="rouletteTitle" class="roulette-text">곡 제목</div>
-            <div id="rouletteArtist" class="roulette-sub">가수 이름</div>
+            <div id="rouletteArtist" style="color:#718096; font-size:16px; margin-top:5px;" id="rouletteArtist">가수</div>
         </div>
     </div>
 
     <div id="randomFilterModal" class="modal" style="z-index: 6500;">
-        <div class="modal-content random-modal-box" style="display: block; height: auto; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-content" style="display: block; height: auto; max-height: 90vh; overflow-y: auto; max-width:500px;">
             <button class="close-btn" onclick="closeRandomModal()">×</button>
             <div class="custom-modal-title">🎲 랜덤 곡 뽑기</div>
-            <div class="rand-section">
-                <div class="rand-section-title">검색어 (제목/가수)</div>
-                <input type="text" id="randKeyword" class="search-input" style="padding: 10px 15px;" placeholder="검색어를 입력하세요 (공백이면 전체)">
+            <div style="margin-bottom:20px;">
+                <div style="font-size:12px; font-weight:800; color:var(--sub); margin-bottom:10px;">검색어 (제목/가수)</div>
+                <input type="text" id="randKeyword" class="search-input" style="padding: 10px 15px;" placeholder="검색어 입력 (공백이면 전체)">
             </div>
-            <div class="rand-section">
-                <div class="rand-section-title">장르 선택</div>
+            <div style="margin-bottom:20px;">
+                <div style="font-size:12px; font-weight:800; color:var(--sub); margin-bottom:10px;">장르 선택</div>
                 <div id="randGenreList" class="rand-list-wrapper"></div>
             </div>
-            <div class="rand-section">
-                <div class="rand-section-title">가수 선택</div>
+            <div style="margin-bottom:20px;">
+                <div style="font-size:12px; font-weight:800; color:var(--sub); margin-bottom:10px;">가수 선택</div>
                 <div id="randArtistList" class="rand-list-wrapper" style="max-height: 180px;"></div>
             </div>
             <button onclick="executeRandom()" class="random-btn" style="background: var(--primary); color: white; margin-bottom: 0;">🎯 조건으로 뽑기</button>
@@ -195,15 +191,11 @@
                 <div style="font-size: 28px; font-weight: 900;"><span id="totalCount">0</span>곡</div>
             </div>
             <button onclick="resetFilters()" style="width:100%; padding:14px; background:var(--line); color:var(--text); border:none; border-radius:15px; cursor:pointer; font-weight:800; margin-bottom:15px;">🔄 필터 초기화</button>
-            
             <button onclick="openRandomModal()" class="random-btn">🎲 랜덤</button>
-
             <h3>장르</h3><div id="categoryFilters" class="filter-list"></div>
             <h3>가수별</h3><div id="artistFilters" class="filter-list"></div>
         </aside>
-        <div style="flex-grow: 1;">
-            <div class="song-grid" id="mainGrid"></div>
-        </div>
+        <div style="flex-grow: 1;"><div class="song-grid" id="mainGrid"></div></div>
     </div>
     <footer><p>© 2026 JEY SONGBOOK. (문의: base77data@gmail.com)</p></footer>
 </div>
@@ -238,83 +230,77 @@
     let currentLyrics = "", currentPersonCount = 1, filteredSongs = [], themeState = 0;
     let randSelGenre = '전체', randSelArtist = '전체';
 
+    // 가수 이름 분리 헬퍼
+    function getSplitArtists(artistStr) {
+        if(!artistStr) return [];
+        return artistStr.split(/[&,x]|feat\.|Feat\.|ft\./i).map(a => a.trim()).filter(a => a);
+    }
+
     db.collection("settings").doc("memo").onSnapshot(doc => { if(doc.exists) currentMemo = doc.data().text || ""; });
 
-    // [커스텀 모달]
-    let modalCallback = null;
+    let mCb = null;
     function showCustomModal(type, title, message, callback = null) {
-        modalCallback = callback;
-        const overlay = document.getElementById('customModalOverlay');
-        const inputEl = document.getElementById('customModalInput');
+        mCb = callback;
+        const ov = document.getElementById('customModalOverlay');
+        const inp = document.getElementById('customModalInput');
         document.getElementById('customModalTitle').innerText = title;
         document.getElementById('customModalMsg').innerText = message;
-        inputEl.value = ''; inputEl.style.display = type === 'prompt' ? 'block' : 'none';
+        inp.value = ''; inp.style.display = type === 'prompt' ? 'block' : 'none';
         document.getElementById('customModalCancelBtn').style.display = type !== 'alert' ? 'block' : 'none';
-        overlay.style.display = 'flex'; if (type === 'prompt') inputEl.focus();
+        ov.style.display = 'flex'; if (type === 'prompt') inp.focus();
     }
-    document.getElementById('customModalConfirmBtn').onclick = () => { document.getElementById('customModalOverlay').style.display = 'none'; if (modalCallback) modalCallback(document.getElementById('customModalInput').value); };
-    document.getElementById('customModalCancelBtn').onclick = () => { document.getElementById('customModalOverlay').style.display = 'none'; if (modalCallback) modalCallback(null); };
+    document.getElementById('customModalConfirmBtn').onclick = () => { document.getElementById('customModalOverlay').style.display = 'none'; if (mCb) mCb(document.getElementById('customModalInput').value); };
+    document.getElementById('customModalCancelBtn').onclick = () => { document.getElementById('customModalOverlay').style.display = 'none'; if (mCb) mCb(null); };
 
-    // [신규 통합 랜덤 모달 로직]
     function openRandomModal() {
-        if(allSongs.length === 0) return showCustomModal('alert', '알림', "데이터를 불러오는 중입니다.");
         randSelGenre = '전체'; randSelArtist = '전체';
         document.getElementById('randKeyword').value = "";
-        
         const genres = ['전체', ...new Set(allSongs.map(s => s.genre).filter(Boolean))];
-        const artists = ['전체', ...[...new Set(allSongs.map(s => s.artist))].sort((a,b) => a.localeCompare(b, 'ko'))];
-
-        document.getElementById('randGenreList').innerHTML = genres.map(g => `<div class="rand-chip ${g==='전체'?'active':''}" onclick="selectRandFilter('genre', '${g}', this)">${g}</div>`).join('');
-        document.getElementById('randArtistList').innerHTML = artists.map(a => `<div class="rand-chip ${a==='전체'?'active':''}" onclick="selectRandFilter('artist', '${a}', this)">${a}</div>`).join('');
         
+        // 필터용 가수 목록 생성 (분리 적용)
+        const artistSet = new Set();
+        allSongs.forEach(s => getSplitArtists(s.artist).forEach(a => artistSet.add(a)));
+        const artists = ['전체', ...Array.from(artistSet).sort((a,b) => a.localeCompare(b, 'ko'))];
+
+        document.getElementById('randGenreList').innerHTML = genres.map(g => `<div class="rand-chip ${g==='전체'?'active':''}" onclick="selRandF('genre', '${g}', this)">${g}</div>`).join('');
+        document.getElementById('randArtistList').innerHTML = artists.map(a => `<div class="rand-chip ${a==='전체'?'active':''}" onclick="selRandF('artist', '${a}', this)">${a}</div>`).join('');
         document.getElementById('randomFilterModal').style.display = 'flex';
     }
-
-    function selectRandFilter(type, val, el) {
-        const parent = el.parentElement;
-        parent.querySelectorAll('.rand-chip').forEach(c => c.classList.remove('active'));
-        el.classList.add('active');
-        if(type === 'genre') randSelGenre = val; else randSelArtist = val;
+    function selRandF(t, v, e) {
+        e.parentElement.querySelectorAll('.rand-chip').forEach(c => c.classList.remove('active'));
+        e.classList.add('active');
+        if(t === 'genre') randSelGenre = v; else randSelArtist = v;
     }
-
     function closeRandomModal() { document.getElementById('randomFilterModal').style.display = 'none'; }
 
     function executeRandom() {
-        const keyword = document.getElementById('randKeyword').value.toLowerCase();
+        const key = document.getElementById('randKeyword').value.toLowerCase();
         let pool = allSongs;
-
-        if(keyword) pool = pool.filter(s => s.title.toLowerCase().includes(keyword) || s.artist.toLowerCase().includes(keyword));
+        if(key) pool = pool.filter(s => s.title.toLowerCase().includes(key) || s.artist.toLowerCase().includes(key));
         if(randSelGenre !== '전체') pool = pool.filter(s => s.genre === randSelGenre);
-        if(randSelArtist !== '전체') pool = pool.filter(s => s.artist === randSelArtist);
+        if(randSelArtist !== '전체') pool = pool.filter(s => s.artist.includes(randSelArtist));
 
         if(pool.length === 0) return showCustomModal('alert', '알림', "조건에 맞는 곡이 없습니다.");
         closeRandomModal();
-        startRoulette(pool);
-    }
-
-    function startRoulette(candidates) {
-        const overlay = document.getElementById('rouletteOverlay');
-        const img = document.getElementById('rouletteImg');
-        const title = document.getElementById('rouletteTitle');
-        const artist = document.getElementById('rouletteArtist');
-        overlay.style.display = 'flex';
-
+        
+        const ov = document.getElementById('rouletteOverlay');
+        ov.style.display = 'flex';
         let count = 0;
         const interval = setInterval(() => {
-            const temp = candidates[Math.floor(Math.random() * candidates.length)];
-            img.src = temp.imgUrl || 'https://via.placeholder.com/200?text=No+Image';
-            title.innerText = temp.title; artist.innerText = temp.artist;
-            count++;
-            if (count > 25) {
+            const temp = pool[Math.floor(Math.random() * pool.length)];
+            document.getElementById('rouletteImg').src = temp.imgUrl || 'https://via.placeholder.com/200';
+            document.getElementById('rouletteTitle').innerText = temp.title;
+            document.getElementById('rouletteArtist').innerText = temp.artist;
+            if (++count > 25) {
                 clearInterval(interval);
-                setTimeout(() => { overlay.style.display = 'none'; openPop(temp.id); }, 800);
+                setTimeout(() => { ov.style.display = 'none'; openPop(temp.id); }, 800);
             }
         }, 100);
     }
 
     function handleMemoClick() {
-        if(isAdmin) { showCustomModal('prompt', '메모 수정', "공지할 메모를 입력하세요:", (m) => { if(m !== null) db.collection("settings").doc("memo").set({ text: m }); }); }
-        else { const toast = document.getElementById('memoToast'); toast.innerText = currentMemo || "등록된 메모가 없습니다."; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
+        if(isAdmin) { showCustomModal('prompt', '메모 수정', "메모 입력:", (m) => { if(m !== null) db.collection("settings").doc("memo").set({ text: m }); }); }
+        else { const t = document.getElementById('memoToast'); t.innerText = currentMemo || "등록된 메모가 없습니다."; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
     }
 
     function searchBugs() { const q = document.getElementById('helperInput').value; if(!q) return showCustomModal('alert', '알림', "입력!"); window.open(`https://music.bugs.co.kr/search/track?q=${encodeURIComponent(q)}`, '_blank'); }
@@ -323,14 +309,14 @@
 
     function cycleTheme() {
         themeState = (themeState + 1) % 3;
-        const html = document.documentElement; const title = document.getElementById('siteTitle'); const btn = document.getElementById('themeCycleBtn');
-        if (themeState === 0) { html.removeAttribute('data-theme'); title.innerText = "제이 노래 목록"; btn.innerText = "☀️"; }
-        else if (themeState === 1) { html.setAttribute('data-theme', 'dark'); title.innerText = "제이 노래 목록"; btn.innerText = "🌙"; }
-        else if (themeState === 2) { html.setAttribute('data-theme', 'pink'); title.innerText = "곤듀 노래 목록"; btn.innerText = "💖"; }
+        const h = document.documentElement; const t = document.getElementById('siteTitle'); const b = document.getElementById('themeCycleBtn');
+        if (themeState === 0) { h.removeAttribute('data-theme'); t.innerText = "제이 노래 목록"; b.innerText = "☀️"; }
+        else if (themeState === 1) { h.setAttribute('data-theme', 'dark'); t.innerText = "제이 노래 목록"; b.innerText = "🌙"; }
+        else if (themeState === 2) { h.setAttribute('data-theme', 'pink'); t.innerText = "곤듀 노래 목록"; b.innerText = "💖"; }
     }
 
     function toggleAdminMode() {
-        if (!isAdmin) { showCustomModal('prompt', '관리자 인증', "비밀번호를 입력하세요:", (pw) => { if (pw === ADMIN_PW) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('adminToggle').classList.add('active'); document.getElementById('addBtn').style.display = "block"; renderGrid(); } }); }
+        if (!isAdmin) { showCustomModal('prompt', '관리자 인증', "비밀번호:", (p) => { if (p === ADMIN_PW) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('adminToggle').classList.add('active'); document.getElementById('addBtn').style.display = "block"; renderGrid(); } }); }
         else { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('adminToggle').classList.remove('active'); document.getElementById('addBtn').style.display = "none"; renderGrid(); }
     }
 
@@ -343,13 +329,18 @@
 
     function handleSearch() {
         const term = document.getElementById('searchInput').value.toLowerCase();
-        filteredSongs = allSongs.filter(s => (s.title + s.artist + (s.genre||'')).toLowerCase().includes(term));
+        filteredSongs = allSongs.filter(s => {
+            const mS = (s.title + s.artist + (s.genre||'')).toLowerCase().includes(term);
+            const mC = selectedCategory === '전체' || (s.genre) === selectedCategory;
+            const mA = selectedArtist === '전체' || s.artist.includes(selectedArtist);
+            return mS && mC && mA;
+        });
         renderGrid();
     }
 
     function renderGrid() {
-        const grid = document.getElementById('mainGrid');
-        grid.innerHTML = filteredSongs.map(s => `
+        const g = document.getElementById('mainGrid');
+        g.innerHTML = filteredSongs.map(s => `
             <div class="song-card" onclick="openPop('${s.id}')">
                 <div class="edit-btn-group">
                     <div class="edit-label" onclick="event.stopPropagation(); openAdmin('${s.id}')">수정</div>
@@ -358,13 +349,7 @@
                 <div class="art-box"><img src="${s.imgUrl || 'https://via.placeholder.com/200'}" loading="lazy" onerror="this.src='https://via.placeholder.com/200?text=No+Image'"></div>
                 <div class="info">
                     <span class="title-row">${s.title}</span>
-                    <div class="sub-row">
-                        <span class="card-artist">${s.artist}</span>
-                        <div class="badge-group">
-                            <span class="card-badge">${s.genre || '기타'}</span>
-                            <span class="card-badge ${s.status === '완곡' ? 'bg-status' : ''}">${s.status || '완곡'}</span>
-                        </div>
-                    </div>
+                    <div class="sub-row"><span class="card-artist">${s.artist}</span><div class="badge-group"><span class="card-badge">${s.genre || '기타'}</span><span class="card-badge ${s.status === '완곡' ? 'bg-status' : ''}">${s.status || '완곡'}</span></div></div>
                 </div>
             </div>
         `).join('');
@@ -373,8 +358,11 @@
     function updateFilterUI() {
         const genres = ['전체', ...new Set(allSongs.map(s => s.genre).filter(Boolean))];
         document.getElementById('categoryFilters').innerHTML = genres.map(g => `<div class="filter-item ${selectedCategory===g?'active':''}" onclick="selectedCategory='${g}'; handleSearch(); updateFilterUI();">${g}</div>`).join('');
-        const artsRaw = [...new Set(allSongs.map(s => s.artist))].sort((a,b) => a.localeCompare(b, 'ko'));
-        document.getElementById('artistFilters').innerHTML = ['전체', ...artsRaw].map(a => `<div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>`).join('');
+        
+        const artistSet = new Set();
+        allSongs.forEach(s => getSplitArtists(s.artist).forEach(a => artistSet.add(a)));
+        const artists = ['전체', ...Array.from(artistSet).sort((a,b) => a.localeCompare(b, 'ko'))];
+        document.getElementById('artistFilters').innerHTML = artists.map(a => `<div class="filter-item ${selectedArtist===a?'active':''}" onclick="selectedArtist='${a}'; handleSearch(); updateFilterUI();">${a}</div>`).join('');
     }
 
     function openPop(id) {
@@ -383,9 +371,9 @@
         document.getElementById('modalSide').innerHTML = `
             <div style="width:100%; max-width:240px; margin:0 auto 15px; aspect-ratio:1; border-radius:20px; overflow:hidden; border:2px solid var(--line);"><img src="${s.imgUrl}" style="width:100%; height:100%; object-fit:cover;"></div>
             <div style="font-size:24px; font-weight:900; margin-bottom:8px; color:var(--primary); line-height:1.2;">${s.title}</div>
-            <div style="font-size:16px; color:var(--sub); margin-bottom:15px; font-weight:700;">${s.artist}</div>
+            <div style="font-size:16px; color:var(--sub); margin-bottom:20px; font-weight:700;">${s.artist}</div>
             <div style="background:var(--bg); padding:18px; border-radius:18px; font-size:14px; line-height:1.8; border:1px solid var(--line); text-align:left;">
-                <div><b>장르:</b> ${s.genre || '-'}</div>
+                <div><b>장르:</b> <span class="card-badge">${s.genre || '-'}</span></div>
                 <div><b>상태:</b> ${s.status || '완곡'}</div>
                 <div><b>Key:</b> ${s.key || 'N/A'}</div>
             </div>
@@ -400,13 +388,12 @@
     }
 
     function updateLyrics() {
-        const unit = parseInt(document.getElementById('lineCount').value) || 2;
-        const lines = currentLyrics.split('\n').filter(l => l.trim() !== "");
-        document.getElementById('lyricsDisplay').innerHTML = lines.map((l, i) => `<div class="p${(Math.floor(i/unit)%currentPersonCount)+1}">${l}</div>`).join('');
+        const u = parseInt(document.getElementById('lineCount').value) || 2;
+        const l = currentLyrics.split('\n').filter(x => x.trim() !== "");
+        document.getElementById('lyricsDisplay').innerHTML = l.map((x, i) => `<div class="p${(Math.floor(i/u)%currentPersonCount)+1}">${x}</div>`).join('');
     }
-
-    function setPerson(n, b = null) { currentPersonCount = n; if(b) { document.querySelectorAll('.p-btn').forEach(btn => btn.classList.remove('active')); b.classList.add('active'); } updateLyrics(); }
-    function setStatus(val) { document.getElementById('f_status').value = val; document.querySelectorAll('.status-btn').forEach(btn => { if(btn.innerText === val) btn.classList.add('active'); else btn.classList.remove('active'); }); }
+    function setPerson(n, b = null) { currentPersonCount = n; if(b) { document.querySelectorAll('.p-btn').forEach(x => x.classList.remove('active')); b.classList.add('active'); } updateLyrics(); }
+    function setStatus(v) { document.getElementById('f_status').value = v; document.querySelectorAll('.status-btn').forEach(x => { if(x.innerText === v) x.classList.add('active'); else x.classList.remove('active'); }); }
 
     function openAdmin(id = null) {
         document.getElementById('adminOverlay').style.display = 'flex';
@@ -420,30 +407,28 @@
     }
 
     function submitData() {
-        const bulk = document.getElementById('f_bulk_input').value;
-        const editId = document.getElementById('edit_id').value;
-        const data = { lyrics: "", status: document.getElementById('f_status').value, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
+        const b = document.getElementById('f_bulk_input').value;
+        const d = { lyrics: "", status: document.getElementById('f_status').value, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
         let isL = false, ly = [];
-        bulk.split('\n').forEach(l => {
+        b.split('\n').forEach(l => {
             const r = l.trim();
-            if(r.startsWith('제목:')) data.title = r.replace('제목:','').trim();
-            else if(r.startsWith('가수:')) data.artist = r.replace('가수:','').trim();
-            else if(r.startsWith('장르:')) data.genre = r.replace('장르:','').trim();
-            else if(r.startsWith('키:')) data.key = r.replace('키:','').trim();
-            else if(r.startsWith('이미지:')) data.imgUrl = r.replace('이미지:','').trim();
-            else if(r.startsWith('유튜브 링크:')) data.clipUrl = r.replace('유튜브 링크:','').trim();
-            else if(r.startsWith('가사원문 링크:')) data.lyricsLink = r.replace('가사원문 링크:','').trim();
-            else if(r.startsWith('가사링크:')) data.lyricsLink = r.replace('가사링크:','').trim();
-            else if(r.startsWith('음원+가사 링크:')) data.audioLyricsUrl = r.replace('음원+가사 링크:','').trim();
-            else if(r.startsWith('노래방 링크:')) data.karaokeUrl = r.replace('노래방 링크:','').trim();
+            if(r.startsWith('제목:')) d.title = r.replace('제목:','').trim();
+            else if(r.startsWith('가수:')) d.artist = r.replace('가수:','').trim();
+            else if(r.startsWith('장르:')) d.genre = r.replace('장르:','').trim();
+            else if(r.startsWith('키:')) d.key = r.replace('키:','').trim();
+            else if(r.startsWith('이미지:')) d.imgUrl = r.replace('이미지:','').trim();
+            else if(r.startsWith('유튜브 링크:')) d.clipUrl = r.replace('유튜브 링크:','').trim();
+            else if(r.startsWith('가사원문 링크:')) d.lyricsLink = r.replace('가사원문 링크:','').trim();
+            else if(r.startsWith('음원+가사 링크:')) d.audioLyricsUrl = r.replace('음원+가사 링크:','').trim();
+            else if(r.startsWith('노래방 링크:')) d.karaokeUrl = r.replace('노래방 링크:','').trim();
             else if(r.startsWith('가사:')) { isL = true; const f = l.split('가사:')[1]?.trim(); if(f) ly.push(f); }
             else if(isL) ly.push(l);
         });
-        if(!data.title) return showCustomModal('alert', '알림', "제목 필수!");
-        db.collection("songs").doc(editId || undefined).set(data, {merge:true}).then(() => { showCustomModal('alert', '완료', "저장완료!"); closeAdmin(); });
+        d.lyrics = ly.join('\n').trim();
+        db.collection("songs").doc(document.getElementById('edit_id').value || undefined).set(d, {merge:true}).then(() => { showCustomModal('alert', '완료', "저장완료!"); closeAdmin(); });
     }
 
-    async function deleteSong(id) { showCustomModal('confirm', '삭제 확인', "정말 삭제하시겠습니까?", async (c) => { if(c) await db.collection("songs").doc(id).delete(); }); }
+    async function deleteSong(id) { showCustomModal('confirm', '삭제 확인', "삭제하시겠습니까?", async (c) => { if(c) await db.collection("songs").doc(id).delete(); }); }
     function closeAdmin() { document.getElementById('adminOverlay').style.display = 'none'; }
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
     function resetFilters() { selectedCategory = '전체'; selectedArtist = '전체'; document.getElementById('searchInput').value = ""; handleSearch(); updateFilterUI(); }
