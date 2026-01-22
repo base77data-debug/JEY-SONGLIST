@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        /* [1] 파스텔톤 테마 설정 */
+        /* [1] 테마 설정 및 최적화된 변수 */
         :root { 
             --bg: #f0f4f8; --card: #ffffff; --text: #2d3748; --sub: #718096; --line: #e2e8f0;
             --input-bg: #ffffff; --primary: #667eea; --primary-text: #ffffff; --accent: #a3b1ff;
@@ -25,8 +25,8 @@
             --shadow: rgba(184, 50, 128, 0.1);
         }
 
-        /* [2] 기본 레이아웃 */
-        * { box-sizing: border-box; font-family: "Pretendard", sans-serif; transition: background 0.3s, color 0.3s; }
+        /* [2] 레이아웃 초기화 */
+        * { box-sizing: border-box; font-family: "Pretendard", sans-serif; transition: background 0.2s, color 0.2s; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 15px; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 1400px; margin: 0 auto; visibility: hidden; }
         .top-notice { font-size: 13px; color: var(--sub); text-align: right; margin-bottom: 12px; font-weight: 600; opacity: 0.9; }
@@ -34,13 +34,12 @@
         header { display: flex; flex-direction: column; gap: 15px; margin-bottom: 25px; border-bottom: 2px solid var(--line); padding-bottom: 20px; }
         .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         
-        /* 사이트 제목 '제이' */
+        /* [수정] 사이트 제목 '제이' 고정 */
         .title-area h1 { margin: 0; font-size: 32px; font-weight: 900; color: var(--primary); cursor: pointer; letter-spacing: -1.5px; }
-        
         .controls { display: flex; gap: 8px; align-items: center; }
 
         /* 버튼 스타일 */
-        .icon-btn { width: 40px; height: 40px; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .icon-btn { width: 40px; height: 40px; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
         .icon-btn:hover { background: var(--bg); transform: translateY(-2px); box-shadow: 0 4px 10px var(--shadow); }
         .memo-btn { background: #faf089; color: #744210; border-color: #ecc94b; }
         .sns-link { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 12px; text-decoration: none; font-weight: 900; font-size: 10px; color: #fff; }
@@ -55,18 +54,18 @@
         .main-layout { display: flex; gap: 30px; align-items: flex-start; }
         aside { width: 220px; flex-shrink: 0; position: sticky; top: 20px; max-height: calc(100vh - 40px); overflow-y: auto; padding-right: 5px; }
         .side-card { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid var(--line); margin-bottom: 15px; text-align: center; }
-        .random-btn { width: 100%; padding: 15px; border-radius: 15px; border: none; cursor: pointer; font-weight: 900; font-size: 15px; background: #a3b1ff; color: #2d3748; margin-bottom: 20px; box-shadow: 0 4px 10px var(--shadow); transition: 0.2s; }
+        .random-btn { width: 100%; padding: 15px; border-radius: 15px; border: none; cursor: pointer; font-weight: 900; font-size: 15px; background: #a3b1ff; color: #2d3748; margin-bottom: 20px; box-shadow: 0 4px 10px var(--shadow); }
 
         aside h3 { font-size: 12px; color: var(--sub); margin: 25px 0 10px 0; border-bottom: 2px solid var(--line); padding-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
         .filter-list { max-height: 250px; overflow-y: auto; font-size: 14px; }
         .filter-item { padding: 8px 0; cursor: pointer; color: var(--sub); transition: 0.2s; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .filter-item:hover, .filter-item.active { color: var(--primary); font-weight: 800; padding-left: 5px; }
 
-        /* [4] 노래 카드 그리드 (글씨 크기 확대) */
+        /* [4] 노래 카드 그리드 (글씨 크기 대폭 확대 적용) */
         .song-grid { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 15px; }
         .song-card { background: var(--card); border-radius: 24px; overflow: hidden; border: 1px solid var(--line); position: relative; cursor: pointer; height: 100%; transition: 0.2s; }
         .song-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px var(--shadow); border-color: var(--accent); }
-        .edit-btn-group { display: none; position: absolute; top: 10px; right: 10px; gap: 6px; z-index: 10; }
+        .edit-btn-group { display: none; position: absolute; top: 12px; right: 12px; gap: 6px; z-index: 10; }
         body.admin-mode .edit-btn-group { display: flex; }
         .edit-label { background: rgba(255,255,255,0.95); color: #2d3748; padding: 6px 12px; border-radius: 10px; font-size: 11px; font-weight: 800; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 
@@ -74,12 +73,12 @@
         .art-box img { width: 100%; height: 100%; object-fit: cover; transition: 0.4s; }
         .info { padding: 20px; }
         
-        /* 노래 제목 글씨 확대 */
+        /* [제목 글씨 확대] */
         .title-row { font-size: 17px; font-weight: 800; margin-bottom: 12px; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
         
         .sub-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; }
         
-        /* 가수명 글씨 확대 */
+        /* [가수 글씨 확대] */
         .card-artist { color: var(--sub); font-size: 14px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; text-align: left; min-width: 0; }
         
         .badge-group { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
@@ -91,10 +90,10 @@
         .modal-content { background: var(--card); width: 100%; max-width: 1050px; border-radius: 35px; padding: 35px; display: grid; grid-template-columns: 320px 1fr; gap: 35px; position: relative; height: 85vh; overflow: hidden; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
         .lyrics-area { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
         
-        /* 가사 줄 간격 3.0 적용 */
+        /* [가사 줄 간격 3.0 적용] */
         .lyrics-display { background: var(--bg); padding: 35px; border-radius: 25px; flex: 1; overflow-y: auto; white-space: pre-wrap; line-height: 3.0; font-size: 19px; color: var(--text); font-weight: 500; box-shadow: inset 0 2px 4px var(--shadow); }
         
-        /* 가사 조절 UI 수리 */
+        /* [가사 조절 디자인 복구] */
         .lyrics-control { display: flex; align-items: center; gap: 12px; background: var(--card); padding: 12px 25px; border-radius: 20px; box-shadow: 0 4px 15px var(--shadow); flex-shrink: 0; }
         .input-num { width: 55px; padding: 10px; text-align: center; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--text); font-weight: 800; font-size: 15px; outline: none; }
         .p-btn { padding: 10px 16px; border-radius: 12px; border: 1px solid var(--line); cursor: pointer; font-weight: 700; background: var(--card); color: var(--sub); font-size: 13px; transition: 0.2s; }
@@ -112,17 +111,10 @@
 
         #rouletteOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 8000; align-items: center; justify-content: center; flex-direction: column; color: white; }
         .roulette-card { width: 280px; height: 380px; background: white; border-radius: 30px; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 20px; box-shadow: 0 0 30px #a3b1ff; }
-        .roulette-img { width: 240px; height: 240px; border-radius: 20px; object-fit: cover; margin-bottom: 20px; }
 
-        /* 랜덤 필터 칩 UI */
-        .rand-list-wrapper { display: flex; flex-wrap: wrap; gap: 6px; max-height: 150px; overflow-y: auto; padding: 10px; background: var(--bg); border-radius: 12px; border: 1px solid var(--line); }
-        .rand-chip { padding: 8px 14px; border-radius: 8px; background: var(--card); border: 1px solid var(--line); font-size: 12px; cursor: pointer; font-weight: 600; color: var(--sub); }
-        .rand-chip.active { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.05); }
-
-        /* [7] 관리자 창 디자인 */
+        /* [7] 관리자 창 */
         .admin-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .admin-modal { background: var(--card); padding: 35px; border-radius: 30px; width: 100%; max-width: 700px; border: 1px solid var(--line); position: relative; max-height: 95vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.2); }
-        .status-selector { display: flex; gap: 10px; margin-bottom: 20px; }
         .status-btn { flex: 1; padding: 14px; background: var(--bg); border: 2px solid var(--line); color: var(--sub); border-radius: 12px; cursor: pointer; font-weight: 800; }
         .status-btn.active { background: var(--primary) !important; color: white !important; border-color: var(--primary) !important; }
         .admin-modal textarea { width: 100%; padding: 20px; background: var(--bg); border: 1px solid var(--line); color: var(--text); border-radius: 15px; margin-bottom: 20px; font-size: 15px; line-height: 1.6; resize: vertical; min-height: 350px; }
@@ -146,8 +138,9 @@
         .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--card); color: var(--text); padding: 15px 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-weight: 700; z-index: 3000; opacity: 1; visibility: hidden; transition: 0.3s; border: 2px solid var(--accent); }
         .toast.show { visibility: visible; transform: translateX(-50%) translateY(0); }
         
-        /* 저작권 상세 문구 복구 */
+        /* [저작권 상세 문구 복구] */
         footer { text-align: center; padding: 60px 20px; color: var(--sub); font-size: 12px; border-top: 2px solid var(--line); margin-top: 60px; line-height: 2.2; }
+        .p1 { color: #2d3748; } .p2 { color: #f87171; } .p3 { color: #60a5fa; } .p4 { color: #34d399; }
     </style>
 </head>
 <body>
@@ -171,7 +164,7 @@
     </header>
 
     <div id="rouletteOverlay">
-        <div style="font-size: 28px; font-weight: 900; margin-bottom: 25px; color: #fff;">🎲 과연 어떤 노래가...?</div>
+        <div style="font-size: 28px; font-weight: 900; margin-bottom: 25px; color: #fff;">🎲 넥스트 트랙은...?</div>
         <div class="roulette-card">
             <img src="" id="rouletteImg" style="width:240px; height:240px; border-radius:20px; object-fit:cover; margin-bottom:20px;">
             <div id="rouletteTitle" style="color:#2d3748; font-size:20px; font-weight:800; text-align:center; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">곡 제목</div>
@@ -189,11 +182,11 @@
             </div>
             <div style="margin-bottom:25px; text-align:left;">
                 <div style="font-size:12px; font-weight:800; color:var(--sub); margin-bottom:10px;">장르 선택</div>
-                <div id="randGenreList" class="rand-list-wrapper"></div>
+                <div id="randGenreList" class="rand-list-wrapper" style="display:flex; flex-wrap:wrap; gap:6px; padding:10px; background:var(--bg); border-radius:12px;"></div>
             </div>
             <div style="margin-bottom:25px; text-align:left;">
                 <div style="font-size:12px; font-weight:800; color:var(--sub); margin-bottom:10px;">가수 선택</div>
-                <div id="randArtistList" class="rand-list-wrapper"></div>
+                <div id="randArtistList" class="rand-list-wrapper" style="display:flex; flex-wrap:wrap; gap:6px; max-height:180px; overflow-y:auto; padding:10px; background:var(--bg); border-radius:12px;"></div>
             </div>
             <button onclick="executeRandom()" class="random-btn" style="background: var(--primary); color: white; margin-bottom: 0;">🎯 조건으로 뽑기</button>
         </div>
@@ -202,7 +195,7 @@
     <div id="customModalOverlay">
         <div class="custom-modal-box">
             <div id="customModalTitle" class="custom-modal-title"></div>
-            <div id="customModalMsg" class="custom-modal-msg" style="margin-bottom:20px;"></div>
+            <div id="customModalMsg" class="custom-modal-msg" style="margin-bottom:20px; font-size:16px;"></div>
             <input type="text" id="customModalInput" class="custom-modal-input">
             <div class="custom-modal-btns" style="display:flex; gap:10px; justify-content:center;">
                 <button id="customModalCancelBtn" class="p-btn" style="width:auto; padding:12px 25px;">취소</button>
@@ -221,7 +214,7 @@
                     <input type="text" id="helperInput" style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--line);" placeholder="곡 제목 - 가수 입력">
                     <button type="button" class="icon-btn" style="background:#ff3c00; color:white; border:none; width:auto; padding:0 15px; font-size:12px;" onclick="searchBugs()">벅스</button>
                     <button type="button" class="icon-btn" style="background:#ff0000; color:white; border:none; width:auto; padding:0 15px; font-size:12px;" onclick="searchYT()">유튜브</button>
-                    <button type="button" style="background:#a0aec0; color:white; border:none; padding:10px 15px; border-radius:12px; font-weight:700; cursor:pointer; font-size:12px;" onclick="fillTemplate()">양식</button>
+                    <button type="button" style="background:#a0aec0; color:white; border:none; padding:10px 15px; border-radius:10px; font-weight:700; cursor:pointer; font-size:12px;" onclick="fillTemplate()">양식</button>
                 </div>
             </div>
             <div class="status-selector" style="display:flex; gap:8px; margin-bottom:20px;">
@@ -271,6 +264,7 @@
                     <button class="p-btn active" onclick="setPerson(1, this)">1인</button>
                     <button class="p-btn" onclick="setPerson(2, this)">2인</button>
                     <button class="p-btn" onclick="setPerson(3, this)">3인</button>
+                    <button class="p-btn" onclick="setPerson(4, this)">4인</button>
                 </div>
             </div>
             <div id="lyricsDisplay" class="lyrics-display"></div>
@@ -291,7 +285,7 @@
     let randSelGenre = '전체', randSelArtist = '전체';
     let displayLimit = 20;
 
-    // [로딩 해제 및 0곡 버그 해결 핵심 로직]
+    // [로딩 수리] 성공 시 화면 표시
     function hideLoader() {
         const loader = document.getElementById('pageLoader');
         if (loader) {
@@ -308,14 +302,14 @@
         allSongs.forEach(s => songDataList[s.id] = s);
         
         document.getElementById('totalCount').innerText = allSongs.length;
-        hideLoader(); // 데이터 로드 성공 시 로더 해제
+        hideLoader(); 
         updateFilterUI(); handleSearch();
     }, err => {
         console.error("Firebase Error:", err);
-        hideLoader(); // 에러 발생 시에도 화면은 보여줌 (무한 로딩 방지)
+        hideLoader();
     });
 
-    // 5초 후에도 로딩이 안 걷히면 강제 해제 (안전 장치)
+    // 5초 후 강제 로딩 해제 (안전장치)
     setTimeout(hideLoader, 5000);
 
     window.onscroll = function() {
@@ -462,7 +456,7 @@
         if(id) {
             const s = songDataList[id]; document.getElementById('edit_id').value = id;
             document.getElementById('adminTitle').innerText = "노래 정보 수정";
-            inputArea.value = `제목: ${s.title}\n가수: ${s.artist}\n장르: ${s.genre||''}\n키: ${s.key||''}\n이미지: ${s.imgUrl}\n유튜브 링크: ${s.clipUrl||''}\n가사원문 링크: ${s.lyricsLink||''}\n가사링크: ${s.lyricsLink||''}\n음원+가사 링크: ${s.audioLyricsUrl||''}\n노래방 링크: ${s.karaokeUrl||''}\n가사:\n${s.lyrics}`;
+            inputArea.value = `제목: ${s.title}\n가수: ${s.artist}\n장르: ${s.genre||''}\n키: ${s.key||''}\n이미지: ${s.imgUrl}\n유튜브 링크: ${s.clipUrl||''}\n가사원문 링크: ${s.lyricsLink||''}\n음원+가사 링크: ${s.audioLyricsUrl||''}\n노래방 링크: ${s.karaokeUrl||''}\n가사:\n${s.lyrics}`;
             setStatus(s.status || '완곡');
         } else {
             document.getElementById('edit_id').value = ""; document.getElementById('adminTitle').innerText = "새 노래 추가";
@@ -483,7 +477,6 @@
             else if(r.startsWith('이미지:')) d.imgUrl = r.replace('이미지:','').trim();
             else if(r.startsWith('유튜브 링크:')) d.clipUrl = r.replace('유튜브 링크:','').trim();
             else if(r.startsWith('가사원문 링크:')) d.lyricsLink = r.replace('가사원문 링크:','').trim();
-            else if(r.startsWith('가사링크:')) d.lyricsLink = r.replace('가사링크:','').trim();
             else if(r.startsWith('음원+가사 링크:')) d.audioLyricsUrl = r.replace('음원+가사 링크:','').trim();
             else if(r.startsWith('노래방 링크:')) d.karaokeUrl = r.replace('노래방 링크:','').trim();
             else if(r.startsWith('가사:')) { isL = true; const f = l.split('가사:')[1]?.trim(); if(f) d.lyrics += f + '\n'; }
@@ -509,7 +502,7 @@
     }
     
     function toggleAdminMode() {
-        if (!isAdmin) { showCustomModal('prompt', '인증', "비밀번호:", (p) => { if (p === ADMIN_PW) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('adminToggle').classList.add('active'); document.getElementById('addBtn').style.display = "block"; renderGrid(); } }); }
+        if (!isAdmin) { showCustomModal('prompt', 'AUTH', "비밀번호:", (p) => { if (p === ADMIN_PW) { isAdmin = true; document.body.classList.add('admin-mode'); document.getElementById('adminToggle').classList.add('active'); document.getElementById('addBtn').style.display = "block"; renderGrid(); } }); }
         else { isAdmin = false; document.body.classList.remove('admin-mode'); document.getElementById('adminToggle').classList.remove('active'); document.getElementById('addBtn').style.display = "none"; renderGrid(); }
     }
     
