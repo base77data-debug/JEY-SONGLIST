@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        /* [2] 테마 및 스타일 설정 */
+        /* [2] 테마 및 기본 스타일 설정 */
         :root { 
             --bg: #f0f4f8; --card: #ffffff; --text: #2d3748; --sub: #718096; --line: #e2e8f0;
             --input-bg: #ffffff; --primary: #667eea; --primary-text: #ffffff; --accent: #a3b1ff;
@@ -28,7 +28,7 @@
         /* [3] 레이아웃 초기화 및 지저분한 스크롤바 제거 */
         * { box-sizing: border-box; font-family: "Pretendard", sans-serif; transition: background 0.2s, color 0.2s; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 15px; min-height: 100vh; overflow-x: hidden; }
-        .container { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; } 
+        .container { max-width: 1400px; margin: 0 auto; display: flex; flex-direction: column; position: relative; } 
         
         /* [고정] 공지사항 위치 (우측 상단) */
         .top-notice { font-size: 13px; color: var(--sub); text-align: right; margin-bottom: 12px; font-weight: 600; opacity: 0.9; width: 100%; }
@@ -41,15 +41,14 @@
         .controls { display: flex; gap: 8px; align-items: center; }
 
         /* [수리] 버튼 클릭 영역 및 우선순위 확보 */
-        .icon-btn { width: 42px; height: 42px; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; font-size: 19px; display: flex; align-items: center; justify-content: center; }
+        .icon-btn { width: 44px; height: 44px; background: var(--card); color: var(--text); border: 1px solid var(--line); border-radius: 12px; cursor: pointer; font-size: 20px; display: flex; align-items: center; justify-content: center; }
         .icon-btn:hover { background: var(--bg); transform: translateY(-2px); box-shadow: 0 4px 10px var(--shadow); }
         .memo-btn { background: #faf089; color: #744210; border-color: #ecc94b; }
-        .sns-link { display: flex; align-items: center; justify-content: center; width: 42px; height: 42px; border-radius: 12px; text-decoration: none; font-weight: 900; font-size: 10px; color: #fff; }
+        .sns-link { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; text-decoration: none; font-weight: 900; font-size: 10px; color: #fff; }
         
-        /* 수정/추가 버튼 인증창 팝업 보장 */
-        .admin-toggle-btn { background: var(--primary); color: var(--primary-text); border: none; padding: 0 16px; height: 42px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 13px; position: relative; z-index: 50; }
+        .admin-toggle-btn { background: var(--primary); color: var(--primary-text); border: none; padding: 0 16px; height: 44px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 13px; position: relative; z-index: 50; }
         .admin-toggle-btn.active { background: #f56565 !important; }
-        .add-btn { background: #4299e1; color: #fff; border: none; padding: 0 16px; height: 42px; border-radius: 12px; display: none; font-weight: 700; cursor: pointer; }
+        .add-btn { background: #4299e1; color: #fff; border: none; padding: 0 16px; height: 44px; border-radius: 12px; display: none; font-weight: 700; cursor: pointer; }
         
         .search-box { width: 100%; }
         .search-input { width: 100%; padding: 16px 22px; background: var(--input-bg); border: 2px solid var(--line); border-radius: 15px; color: var(--text); font-size: 16px; outline: none; box-shadow: 0 4px 6px var(--shadow); transition: 0.3s; }
@@ -95,7 +94,6 @@
         .lyrics-area { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
         .lyrics-display { background: var(--bg); padding: 35px; border-radius: 25px; flex: 1; overflow-y: auto; white-space: pre-wrap; line-height: 3.0; font-size: 19px; color: var(--text); font-weight: 500; box-shadow: inset 0 2px 4px var(--shadow); text-align: center; }
         
-        /* 상세창 가사 컨트롤 디자인 수리 */
         .lyrics-control { display: flex; align-items: center; gap: 12px; background: var(--card); padding: 12px 25px; border-radius: 20px; box-shadow: 0 4px 15px var(--shadow); flex-shrink: 0; }
         .input-num { width: 55px; padding: 10px; text-align: center; border-radius: 12px; border: 2px solid var(--line); background: var(--bg); color: var(--text); font-weight: 800; font-size: 15px; outline: none; }
         .p-btn { padding: 10px 16px; border-radius: 12px; border: 1px solid var(--line); cursor: pointer; font-weight: 700; background: var(--card); color: var(--sub); font-size: 13px; transition: 0.2s; }
@@ -152,7 +150,7 @@
     </style>
 </head>
 <body>
-<div id="pageLoader" style="display: none;"><div class="spinner"></div><div style="font-size: 18px; font-weight: 800; color: var(--primary);">데이터를 빠르게 동기화 중입니다...</div></div>
+<div id="pageLoader" style="display: none;"><div class="spinner"></div><div style="font-size: 18px; font-weight: 800; color: var(--primary);">데이터 동기화 중...</div></div>
 
 <div class="container" id="mainContainer" style="visibility: visible;">
     <div class="top-notice">💡 앨범 사진 오류나 정보 수정이 필요하다면 카페 게시판에 알려주세요.</div>
@@ -193,18 +191,6 @@
     </footer>
 </div>
 
-<div id="customModalOverlay">
-    <div class="custom-modal-box">
-        <div id="customModalTitle" class="custom-modal-title"></div>
-        <div id="customModalMsg" class="custom-modal-msg"></div>
-        <input type="text" id="customModalInput" class="custom-modal-input">
-        <div class="custom-modal-btns" style="display:flex; gap:10px; justify-content:center;">
-            <button id="customModalCancelBtn" class="modal-btn-cancel">취소</button>
-            <button id="customModalConfirmBtn" class="modal-btn-confirm">확인</button>
-        </div>
-    </div>
-</div>
-
 <div id="modal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <button class="close-btn" onclick="closeModal()">×</button>
@@ -232,7 +218,7 @@
         <div style="font-size:24px; font-weight:900; margin-bottom:30px; color:var(--primary); text-align:center;">🎲 랜덤 곡 뽑기</div>
         <div style="margin-bottom:25px; text-align:left;">
             <div style="font-size:13px; font-weight:800; color:var(--sub); margin-bottom:12px;">검색어 (제목/가수)</div>
-            <input type="text" id="randKeyword" class="search-input" style="padding: 12px 20px;" placeholder="검색어 입력 (공백이면 전체)">
+            <input type="text" id="randKeyword" class="search-input" style="padding: 10px 15px;" placeholder="검색어 입력 (공백이면 전체)">
         </div>
         <div style="margin-bottom:25px; text-align:left;">
             <div style="font-size:13px; font-weight:800; color:var(--sub); margin-bottom:12px;">장르 선택</div>
@@ -252,6 +238,18 @@
         <img src="" id="rouletteImg" style="width:240px; height:240px; border-radius:20px; object-fit:cover; margin-bottom:20px;">
         <div id="rouletteTitle" style="color:#2d3748; font-size:20px; font-weight:800; text-align:center; width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">곡 제목</div>
         <div id="rouletteArtist" style="color:#718096; font-size:16px; margin-top:5px;">가수</div>
+    </div>
+</div>
+
+<div id="customModalOverlay">
+    <div class="custom-modal-box">
+        <div id="customModalTitle" class="custom-modal-title"></div>
+        <div id="customModalMsg" class="custom-modal-msg"></div>
+        <input type="text" id="customModalInput" class="custom-modal-input">
+        <div class="custom-modal-btns" style="display:flex; gap:10px; justify-content:center;">
+            <button id="customModalCancelBtn" class="modal-btn-cancel">취소</button>
+            <button id="customModalConfirmBtn" class="modal-btn-confirm">확인</button>
+        </div>
     </div>
 </div>
 
@@ -295,8 +293,8 @@
     let randSelGenre = '전체', randSelArtist = '전체';
     let displayLimit = 20;
 
-    // [2] 방문자 수 1일 1회 카운트 (localStorage 활용)
-    const visitorKey = 'jey_visited_date_v1';
+    // [2] 방문자 수 1일 1회 고정 로직 (localStorage 활용)
+    const visitorKey = 'jey_visited_date_final';
     const today = new Date().toLocaleDateString('sv-SE', {timeZone: 'Asia/Seoul'});
     const visitorRef = db.collection("visitors").doc(today);
     
@@ -305,24 +303,28 @@
         localStorage.setItem(visitorKey, today);
     }
 
-    // [3] 0.1초 로딩 엔진 (캐시 즉시 출력)
-    const cacheKey = 'jey_songs_v_ultimate_v7';
+    // [3] 0.1초 로딩 엔진 (캐시 즉시 출력 및 로더 해제)
+    const cacheKey = 'jey_songs_v_ultimate_v7_final';
     const cachedData = localStorage.getItem(cacheKey);
     
+    function hideLoader() {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 400);
+        }
+        document.getElementById('mainContainer').style.visibility = 'visible';
+    }
+
     if(cachedData) {
         allSongs = JSON.parse(cachedData);
         allSongs.forEach(s => songDataList[s.id] = s);
         document.getElementById('totalCount').innerText = allSongs.length;
-        document.getElementById('mainContainer').style.visibility = 'visible';
+        // 캐시 있으면 로더 즉시 해제
+        hideLoader();
         updateFilterUI(); handleSearch();
     } else {
         document.getElementById('pageLoader').style.display = 'flex';
-    }
-
-    function hideLoader() {
-        const loader = document.getElementById('pageLoader');
-        if (loader) { loader.style.opacity = '0'; setTimeout(() => { loader.style.display = 'none'; }, 400); }
-        document.getElementById('mainContainer').style.visibility = 'visible';
     }
 
     // [4] Firebase 데이터 실시간 업데이트 (백그라운드 동기화)
@@ -332,7 +334,8 @@
         localStorage.setItem(cacheKey, JSON.stringify(allSongs));
         allSongs.forEach(s => songDataList[s.id] = s);
         document.getElementById('totalCount').innerText = allSongs.length;
-        hideLoader(); updateFilterUI(); handleSearch();
+        hideLoader(); 
+        updateFilterUI(); handleSearch();
     }, err => { hideLoader(); });
 
     // [5] [수리 핵심] 관리자 모드 및 인증 팝업 작동 보장
@@ -350,7 +353,7 @@
         if (type === 'prompt') inp.focus();
     }
 
-    // 인증 팝업 '확인' 버튼 이벤트 수리
+    // 인증 팝업 버튼 이벤트 (전역 스코프 유지)
     document.getElementById('customModalConfirmBtn').onclick = function() { 
         const val = document.getElementById('customModalInput').value;
         document.getElementById('customModalOverlay').style.display = 'none'; 
@@ -437,7 +440,7 @@
         const s = songDataList[id]; if(!s) return;
         currentLyrics = s.lyrics || "";
         document.getElementById('modalSide').innerHTML = `
-            <div style="width:100%; max-width:280px; margin:0 auto 15px; aspect-ratio:1; border-radius:24px; overflow:hidden; border:2px solid var(--line); box-shadow:0 15px 30px rgba(0,0,0,0.15);"><img src="${s.imgUrl}" style="width:100%; height:100%; object-fit:cover;"></div>
+            <div style="width:100%; max-width:280px; margin:0 auto 20px; aspect-ratio:1; border-radius:24px; overflow:hidden; border:2px solid var(--line); box-shadow:0 15px 30px rgba(0,0,0,0.15);"><img src="${s.imgUrl}" style="width:100%; height:100%; object-fit:cover;"></div>
             <div style="font-size:28px; font-weight:900; margin-bottom:8px; color:var(--primary); line-height:1.2;">${s.title}</div>
             <div style="font-size:17px; color:var(--sub); margin-bottom:20px; font-weight:700;">${s.artist}</div>
             <div style="background:var(--bg); padding:18px; border-radius:18px; font-size:15px; line-height:1.8; border:1px solid var(--line); text-align:left;">
