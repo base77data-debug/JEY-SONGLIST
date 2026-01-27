@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        /* [2] 다크모드 기본 테마 고정 */
+        /* [2] 다크모드 고정 및 기본 스타일 */
         :root { 
             --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --sub: #94a3b8; --line: #334155;
             --primary: #818cf8; --accent: #a5b4fc; --shadow: rgba(0, 0, 0, 0.4);
@@ -18,15 +18,15 @@
         body { background: var(--bg); color: var(--text); margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; }
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; position: relative; }
 
-        /* [관리자 모드] 작고 빨간색 버튼 */
-        .admin-trigger { position: absolute; top: 15px; right: 15px; width: 15px; height: 15px; background: #f87171; border-radius: 4px; border: none; cursor: pointer; z-index: 9999; }
-        body.admin-mode .admin-trigger { background: #6366f1; width: 20px; height: 20px; }
+        /* [수리] 작고 색상 있는 관리자 버튼 */
+        .admin-trigger { position: absolute; top: 15px; right: 15px; width: 20px; height: 20px; background: #f87171; border-radius: 5px; border: none; cursor: pointer; z-index: 9999; }
+        body.admin-mode .admin-trigger { background: #6366f1; }
         body.admin-mode [contenteditable="true"] { outline: 1px dashed var(--primary); border-radius: 4px; background: rgba(129, 140, 248, 0.05); }
 
-        /* [헤더] 방송인 프로필 */
+        /* [헤더] 유튜브 추가 및 링크 연동 */
         .header-section { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; border-bottom: 1px solid var(--line); margin-bottom: 15px; }
         .profile-area { display: flex; align-items: center; gap: 25px; }
-        .pfp-box { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #222; }
+        .pfp-box { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--primary); overflow: hidden; background: #222; cursor: pointer; }
         .pfp-box img { width: 100%; height: 100%; object-fit: cover; }
         .profile-detail h2 { font-size: 32px; font-weight: 900; color: var(--primary); margin: 0; outline: none; }
         .sns-group { display: flex; gap: 8px; margin-top: 12px; }
@@ -41,18 +41,20 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* [홈 탭] 2x3 그리드 및 기념일/링크 우측 배치 */
+        /* [홈 탭] 2x3 그리드 및 기념일/링크 우측 정렬 */
         .home-layout { display: grid; grid-template-columns: 1fr 320px; gap: 30px; }
-        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .section-header h3 { margin: 0; font-size: 20px; font-weight: 900; }
-        .latest-song-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; } 
+        .btn-more { font-size: 12px; font-weight: 800; color: var(--sub); cursor: pointer; }
         
+        .latest-song-grid { display: grid; grid-template-columns: repeat(3, 2fr); grid-template-rows: repeat(2, 1fr); gap: 15px; } 
         .side-box { background: var(--card); border-radius: 20px; padding: 25px; border: 1px solid var(--line); box-shadow: 0 4px 10px var(--shadow); margin-bottom: 25px; }
         .item-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; font-weight: 700; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
 
-        /* [노래책] 카드 및 필터 */
+        /* [노래책] 실시간 검색 및 텍스트 생략 (...) */
         .filter-container { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; align-items: center; }
         .filter-btn { padding: 10px 18px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); cursor: pointer; font-weight: 800; font-size: 14px; color: var(--text); position: relative; }
+        
         .popover { display: none; position: absolute; top: 100%; left: 0; background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); z-index: 2000; width: 450px; max-width: 90vw; margin-top: 10px; }
         .popover.active { display: block; }
         .grid-select { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; max-height: 350px; overflow-y: auto; scrollbar-width: none; }
@@ -69,20 +71,20 @@
         .badge { font-size: 9px; padding: 3px 7px; border-radius: 5px; font-weight: 900; background: #2d3748; color: var(--sub); border: 1px solid var(--line); }
         .badge.status-ok { background: #166534; color: #bbf7d0; border: none; }
 
-        /* [수리] 좋아요 시스템 */
+        /* [수리] 좋아요 시스템 (취소 가능) */
         .like-btn { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.6); border-radius: 8px; padding: 5px 8px; display: flex; align-items: center; gap: 4px; border: none; cursor: pointer; color: white; font-size: 11px; font-weight: 900; z-index: 10; }
         .like-btn.liked { color: #f87171; }
 
-        /* [수리] 가사 창 대형화 */
-        .detail-layout { display: grid; grid-template-columns: 350px 1fr; gap: 40px; width: 95%; max-width: 1200px; height: 90vh; padding: 40px; border-radius: 40px; position: relative; overflow: hidden; }
+        /* [수리] 가사 창 대형화 및 X 버튼 */
+        .detail-layout { display: grid; grid-template-columns: 350px 1fr; gap: 40px; width: 95%; max-width: 1200px; height: 85vh; padding: 40px; border-radius: 40px; position: relative; overflow: hidden; }
         .detail-lyrics { background: #0f172a; padding: 40px; border-radius: 25px; overflow-y: auto; white-space: pre-wrap; line-height: 2.5; font-size: 20px; text-align: center; color: #cbd5e1; flex: 1; }
-        .close-x { position: absolute; top: 20px; right: 25px; font-size: 35px; color: var(--sub); cursor: pointer; border: none; background: none; font-weight: 900; z-index: 10001; }
+        .close-x { position: absolute; top: 15px; right: 20px; font-size: 32px; color: var(--sub); cursor: pointer; border: none; background: none; font-weight: 900; z-index: 10001; }
         .close-x:hover { color: white; }
 
         /* [수리] 랜덤 5곡 결과창 */
-        .random-result-box { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; margin-top: 20px; }
+        .random-result-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-top: 20px; }
 
-        /* [방명록] */
+        /* [방명록] 시간 및 등록 보수 */
         .gb-write-box { background: var(--card); border-radius: 18px; padding: 25px; border: 1px solid var(--line); margin-bottom: 25px; }
         .gb-input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); font-size: 14px; outline: none; margin-bottom: 12px; resize: none; }
         .gb-item { background: var(--card); padding: 20px; border-radius: 18px; border: 1px solid var(--line); margin-bottom: 12px; position: relative; }
@@ -90,7 +92,7 @@
         .gb-time { font-size: 11px; color: var(--sub); margin-top: 8px; display: block; }
 
         /* 모달 공통 */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; align-items: center; justify-content: center; }
         .modal-box { background: var(--card); padding: 40px; border-radius: 35px; width: 90%; max-width: 500px; position: relative; }
         .modal-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid var(--line); margin: 10px 0; background: var(--bg); color: var(--text); font-size: 15px; outline: none; }
         .modal-btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; font-size: 15px; margin-top: 10px; }
@@ -101,7 +103,7 @@
         footer { margin-top: 60px; text-align: center; color: var(--sub); font-size: 12px; padding-bottom: 40px; border-top: 1px solid var(--line); padding-top: 40px; }
         
         @media (max-width: 768px) {
-            .home-layout, .detail-layout, .random-result-box { grid-template-columns: 1fr; }
+            .home-layout, .detail-layout, .random-result-grid { grid-template-columns: 1fr; }
             .header-section { flex-direction: column; text-align: center; gap: 20px; }
             .song-grid, .latest-song-grid { grid-template-columns: repeat(2, 1fr); }
         }
@@ -124,7 +126,7 @@
                     <a id="linkCafe" class="sns-link" style="background:#48bb78" target="_blank">카페</a>
                     <a id="linkFansim" class="sns-link" style="background:#f472b6" target="_blank">팬심M</a>
                     <a id="linkYoutube" class="sns-link" style="background:#ff0000" target="_blank">유튜브</a>
-                    <button class="admin-only chip" style="padding:4px 8px; font-size:9px; margin-left:5px;" onclick="openLinkEdit()">링크 수정</button>
+                    <button class="admin-only chip" style="padding:4px 8px; font-size:9px; margin-left:5px; background:var(--line);" onclick="openLinkEdit()">링크 수정</button>
                 </div>
             </div>
         </div>
@@ -181,7 +183,7 @@
                 <div class="filter-btn" onclick="togglePop('artistPop')">가수 전체</div>
                 <div id="artistPop" class="popover">
                     <button class="close-x" style="font-size:20px; top:10px; right:15px;" onclick="togglePop('artistPop')">&times;</button>
-                    <button class="chip" style="grid-column: 1/-1; margin-bottom:10px;" onclick="setArtist('전체')">가수 전체 보기</button>
+                    <button class="chip" style="grid-column: 1/-1; margin-bottom:10px;" onclick="setArtist('전체')">전체 가구 보기</button>
                     <div id="artistGrid" class="grid-select"></div>
                 </div>
             </div>
@@ -192,7 +194,7 @@
                 <option value="abcArtist">가수순</option>
                 <option value="likes">좋아요순</option>
             </select>
-            <button class="filter-btn" style="background:var(--primary); color:white; border:none;" onclick="openRandomModal()">랜덤 뽑기</button>
+            <button class="filter-btn" style="background:var(--primary); color:white; border:none;" onclick="openRandomResult()">랜덤 뽑기</button>
             <button class="admin-only filter-btn" style="background:#4299e1; color:white; border:none;" onclick="openSongModal()">곡 추가</button>
         </div>
         <div id="mainSongGrid" class="song-grid"></div>
@@ -207,6 +209,7 @@
                 <option value="유튜브">유튜브</option>
                 <option value="숲">숲</option>
                 <option value="치지직">치지직</option>
+                <option value="기타">기타</option>
             </select>
             <button class="admin-only filter-btn" style="background:#4299e1; color:white; border:none;" onclick="openClipModal()">클립 추가</button>
         </div>
@@ -217,9 +220,9 @@
         <div class="gb-write-box">
             <h3>방명록 남기기</h3>
             <textarea id="gbInp" class="gb-input" rows="4" placeholder="따뜻한 한마디를 남겨주세요."></textarea>
-            <button class="modal-btn" style="background:var(--primary); color:white;" onclick="addGb()">등록하기</button>
+            <button class="modal-btn" style="background:var(--primary); color:white; width:100%;" onclick="addGb()">등록하기</button>
         </div>
-        <div id="mainGbList"></div>
+        <div id="mainGbList" class="gb-list"></div>
     </div>
 
     <div id="info" class="tab-content">
@@ -252,8 +255,8 @@
     <div class="modal-box" style="max-width:1100px;">
         <button class="close-x" onclick="closeModal('randomResultModal')">&times;</button>
         <h2 style="text-align:center; color:var(--primary); margin-bottom:30px;">🎲 오늘 제이404의 추천 곡 (5선)</h2>
-        <div id="randomResultGrid" class="random-result-box"></div>
-        <button class="modal-btn" style="background:var(--primary); color:white; margin-top:30px;" onclick="executeRandomPick()">다시 뽑기</button>
+        <div id="randomResultGrid" class="random-result-grid"></div>
+        <button class="modal-btn" style="background:var(--primary); color:white; margin-top:30px;" onclick="openRandomResult()">다시 뽑기</button>
     </div>
 </div>
 
@@ -262,7 +265,7 @@
         <button class="close-x" onclick="closeModal('authModal')">&times;</button>
         <h3>관리자 인증</h3>
         <input type="password" id="adminPw" class="modal-input" placeholder="비밀번호">
-        <button class="modal-btn" style="background:var(--primary); color:white;" onclick="checkAuth()">확인</button>
+        <button class="modal-btn" style="background:var(--primary); color:white; width:100%;" onclick="checkAuth()">확인</button>
     </div>
 </div>
 
@@ -278,7 +281,7 @@
         <input type="text" id="sImg" class="modal-input" placeholder="이미지 URL">
         <textarea id="sLyrics" class="modal-input" style="height:120px;" placeholder="가사 내용"></textarea>
         <input type="text" id="sLink" class="modal-input" placeholder="유튜브 링크 URL">
-        <button class="modal-btn" style="background:var(--primary); color:white;" id="saveSongBtn" onclick="saveSong()">저장</button>
+        <button class="modal-btn" style="background:var(--primary); color:white;" onclick="saveSong()">저장</button>
     </div>
 </div>
 
@@ -321,6 +324,7 @@
             <option value="유튜브">유튜브</option>
             <option value="숲">숲</option>
             <option value="치지직">치지직</option>
+            <option value="기타">기타</option>
         </select>
         <input type="text" id="cUrl" class="modal-input" placeholder="영상 링크">
         <input type="text" id="cThumb" class="modal-input" placeholder="썸네일 URL">
@@ -349,8 +353,8 @@
     let allSongs = [], allClips = [], allGb = [], anniversaries = [], profileData = {}, infoLinks = [];
     let selGenre = '전체', selArtist = '전체', songLimit = 20;
 
+    // [데이터 동기화 엔진 수리]
     function init() {
-        // [수리] 실시간 곡 로드 및 하트 초기화 플래그 처리
         db.collection("songs").orderBy("createdAt", "desc").onSnapshot(snap => {
             allSongs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderSongGrid();
@@ -388,9 +392,19 @@
                 renderInfoLinks();
             }
         });
+
+        // 무한 스크롤 복구
+        window.addEventListener('scroll', () => {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 600) {
+                if (songLimit < allSongs.length) {
+                    songLimit += 20;
+                    renderSongGrid();
+                }
+            }
+        });
     }
 
-    // [관리자 인증]
+    // [관리자 인증 수리]
     function openAuth() { document.getElementById('authModal').style.display = 'flex'; }
     function checkAuth() {
         if(document.getElementById('adminPw').value === "1234") {
@@ -401,27 +415,27 @@
         } else { alert("비밀번호 불일치"); }
     }
 
-    // [좋아요 수리]
+    // [좋아요 수리: 취소 가능 및 로컬 저장]
     async function toggleLike(id) {
-        const likedIds = JSON.parse(localStorage.getItem('jey_likes_v4') || "[]");
+        const likedIds = JSON.parse(localStorage.getItem('jey_likes_v5') || "[]");
         const isLiked = likedIds.includes(id);
 
         if (isLiked) {
             const updated = likedIds.filter(x => x !== id);
-            localStorage.setItem('jey_likes_v4', JSON.stringify(updated));
+            localStorage.setItem('jey_likes_v5', JSON.stringify(updated));
             await db.collection("songs").doc(id).update({ likes: firebase.firestore.FieldValue.increment(-1) });
         } else {
             likedIds.push(id);
-            localStorage.setItem('jey_likes_v4', JSON.stringify(likedIds));
+            localStorage.setItem('jey_likes_v5', JSON.stringify(likedIds));
             await db.collection("songs").doc(id).update({ likes: firebase.firestore.FieldValue.increment(1) });
         }
     }
 
-    // [노래책 렌더링 - 텍스트 생략 포함]
+    // [노래책 렌더링 수리: 실시간 검색 & 텍스트 생략]
     function renderSongGrid() {
         const search = document.getElementById('songSearchInp').value.toLowerCase();
         const sort = document.getElementById('songSort').value;
-        const likedIds = JSON.parse(localStorage.getItem('jey_likes_v4') || "[]");
+        const likedIds = JSON.parse(localStorage.getItem('jey_likes_v5') || "[]");
 
         let filtered = allSongs.filter(s => 
             (selGenre === '전체' || s.genre === selGenre) &&
@@ -432,6 +446,7 @@
         if(sort === 'abcTitle') filtered.sort((a,b) => a.title.localeCompare(b, 'ko'));
         else if(sort === 'abcArtist') filtered.sort((a,b) => a.artist.localeCompare(b, 'ko'));
         else if(sort === 'likes') filtered.sort((a,b) => (b.likes||0) - (a.likes||0));
+        else if(sort === 'old') filtered.sort((a,b) => a.createdAt - b.createdAt);
 
         document.getElementById('mainSongGrid').innerHTML = filtered.slice(0, songLimit).map(s => `
             <div class="song-card" onclick="openSongDetail('${s.id}')">
@@ -456,12 +471,12 @@
         document.getElementById('infinite-loader').innerText = filtered.length > songLimit ? "스크롤하여 곡 더보기" : "모든 곡을 불러왔습니다.";
     }
 
-    // [상세보기 확대 수리]
+    // [상세보기 수리: 가사 창 대형화 및 가사 출력]
     function openSongDetail(id) {
         const s = allSongs.find(x => x.id === id);
         document.getElementById('detailSide').innerHTML = `
             <img src="${s.imgUrl || 'https://via.placeholder.com/300'}" style="width:100%; border-radius:25px; box-shadow:0 15px 30px rgba(0,0,0,0.5);">
-            <h2 style="margin:25px 0 10px 0; font-size:26px; line-height:1.2;">${s.title}</h2>
+            <h2 style="margin:25px 0 10px 0; font-size:26px;">${s.title}</h2>
             <p style="color:var(--sub); font-size:18px; font-weight:700;">${s.artist}</p>
             <div style="margin-top:15px;"><span class="badge status-ok" style="font-size:12px; padding:6px 12px;">${s.status || '완곡'}</span></div>
             ${s.link ? `<button class="modal-btn" style="background:#ff0000; color:white; margin-top:30px;" onclick="window.open('${s.link}')">유튜브에서 보기</button>` : ''}
@@ -470,10 +485,8 @@
         document.getElementById('songDetailModal').style.display = 'flex';
     }
 
-    // [랜덤 5곡 로직]
-    function openRandomModal() { executeRandomPick(); }
-    function executeRandomPick() {
-        if(allSongs.length < 5) return alert("곡이 부족합니다.");
+    // [랜덤 5곡 뽑기 수리]
+    function openRandomResult() {
         const shuffled = [...allSongs].sort(() => 0.5 - Math.random()).slice(0, 5);
         document.getElementById('randomResultGrid').innerHTML = shuffled.map(s => `
             <div class="song-card" style="cursor:default;">
@@ -487,28 +500,7 @@
         document.getElementById('randomResultModal').style.display = 'flex';
     }
 
-    // [링크 아이콘 자동화 및 정보 사이드바]
-    function renderInfoLinks() {
-        const html = infoLinks.map((link, idx) => {
-            let icon = '🔗';
-            if(link.title.includes('유튜브') || link.url.includes('youtube')) icon = '📹';
-            if(link.title.includes('카페') || link.url.includes('naver')) icon = '☕';
-            if(link.title.includes('숲') || link.url.includes('soop')) icon = '🌲';
-            if(link.title.includes('방송') || link.url.includes('chzzk')) icon = '📡';
-            
-            return `
-                <div class="item-row">
-                    <a href="${link.url}" target="_blank" style="text-decoration:none; color:inherit; display:flex; align-items:center; gap:8px;">
-                        <span>${icon}</span> <span>${link.title}</span>
-                    </a>
-                    <button class="admin-only chip" style="border:none; color:#f87171;" onclick="deleteInfoLink(${idx})">✖</button>
-                </div>
-            `;
-        }).join('');
-        document.getElementById('infoLinkList').innerHTML = html || '<p style="font-size:12px; color:var(--sub);">등록된 링크가 없습니다.</p>';
-    }
-
-    // [기념일 및 프로필 추가 수리]
+    // [관리자 추가 버튼들 수리: 직접 입력 보장]
     function openAnnModal() { document.getElementById('annModal').style.display = 'flex'; }
     async function saveAnn() {
         const name = document.getElementById('annNameInp').value;
@@ -517,6 +509,19 @@
         anniversaries.push({ name, date });
         await db.collection("settings").doc("main").update({ anniversaries });
         closeModal('annModal');
+        ['annNameInp', 'annDateInp'].forEach(id => document.getElementById(id).value = "");
+    }
+
+    function openClipModal() { document.getElementById('clipModal').style.display = 'flex'; }
+    async function saveClip() {
+        await db.collection("clips").add({
+            title: document.getElementById('cTitle').value,
+            platform: document.getElementById('cPlatform').value,
+            url: document.getElementById('cUrl').value,
+            thumbnail: document.getElementById('cThumb').value,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        closeModal('clipModal');
     }
 
     function openProfileModal() { document.getElementById('profileModal').style.display = 'flex'; }
@@ -527,6 +532,45 @@
         profileData[key] = val;
         await db.collection("settings").doc("main").update({ profile: profileData });
         closeModal('profileModal');
+        ['profKeyInp', 'profValInp'].forEach(id => document.getElementById(id).value = "");
+    }
+
+    // [방명록 수리: 시간 추가 및 등록 보장]
+    function addGb() {
+        const content = document.getElementById('gbInp').value;
+        if(!content.trim()) return;
+        const userNum = Math.floor(Math.random() * 8999) + 1000;
+        db.collection("guestbook").add({ content, userNum, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+          .then(() => { document.getElementById('gbInp').value = ""; });
+    }
+    function renderGbList() {
+        document.getElementById('mainGbList').innerHTML = allGb.map(g => `
+            <div class="gb-item">
+                <div class="gb-user">익명(${g.userNum})</div>
+                <div style="margin-top:5px;">${g.content}</div>
+                <span class="gb-time">${g.createdAt ? new Date(g.createdAt.toDate()).toLocaleString() : ''}</span>
+                <button class="admin-only" onclick="deleteData('guestbook', '${g.id}')" style="position:absolute; top:20px; right:20px; color:#f87171; background:none; border:none; font-weight:800; cursor:pointer;">삭제</button>
+            </div>
+        `).join('');
+    }
+
+    // [정보 탭 링크 이모티콘 자동화]
+    function renderInfoLinks() {
+        document.getElementById('infoLinkList').innerHTML = infoLinks.map((link, idx) => {
+            let icon = '🔗';
+            if(link.title.includes('유튜브')) icon = '📹';
+            else if(link.title.includes('카페')) icon = '☕';
+            else if(link.title.includes('숲')) icon = '🌲';
+            else if(link.title.includes('방송')) icon = '📡';
+            return `
+                <div class="item-row">
+                    <a href="${link.url}" target="_blank" style="text-decoration:none; color:inherit; display:flex; gap:8px;">
+                        <span>${icon}</span> <span>${link.title}</span>
+                    </a>
+                    <button class="admin-only chip" style="color:#f87171; border:none;" onclick="deleteInfoLink(${idx})">✖</button>
+                </div>
+            `;
+        }).join('') || '<p style="font-size:12px; color:var(--sub);">등록된 링크가 없습니다.</p>';
     }
 
     // [유틸리티]
@@ -536,16 +580,21 @@
         document.getElementById(id).classList.add('active');
         el.classList.add('active');
     }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function togglePop(id) {
         const target = document.getElementById(id);
         const active = target.classList.contains('active');
         document.querySelectorAll('.popover').forEach(p => p.classList.remove('active'));
         if(!active) target.classList.add('active');
     }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function setArtist(a) { selArtist = a; applyFilters(); }
-    function setGenre(g) { selGenre = g; applyFilters(); }
     function applyFilters() { document.querySelectorAll('.popover').forEach(p => p.classList.remove('active')); renderSongGrid(); }
+    function setGenre(g) { selGenre = g; applyFilters(); }
+    function forceTab(id) {
+        const target = Array.from(document.querySelectorAll('.nav-item')).find(n => n.innerText.includes(id === 'songbook' ? '노래책' : '노래클립'));
+        switchTab(id, target);
+    }
+    function pickRandom() { const rand = allSongs[Math.floor(Math.random() * allSongs.length)]; openSongDetail(rand.id); }
     async function deleteData(coll, id) { if(confirm("삭제하시겠습니까?")) await db.collection(coll).doc(id).delete(); }
 
     init();
